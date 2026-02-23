@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Administrativo</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+</head>
+
+<body class="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen font-sans">
+
+<!-- LOGIN -->
+<div id="loginModal" class="fixed inset-0 bg-black/40 flex justify-center items-center z-50 backdrop-blur-sm">
+  <div class="bg-white w-[380px] p-8 rounded-3xl shadow-2xl">
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">Login Admin</h2>
+
+    <input id="email" type="email" placeholder="Email"
+      class="w-full border rounded-xl px-4 py-3 mb-4">
+
+    <input id="password" type="password" placeholder="Senha"
+      class="w-full border rounded-xl px-4 py-3 mb-5">
+
+    <button onclick="login()"
+      class="w-full bg-blue-500 hover:bg-blue-600 transition text-white py-3 rounded-xl font-semibold shadow-md">
+      Entrar
+    </button>
+
+    <p id="loginError" class="text-red-500 mt-4 text-sm text-center"></p>
+  </div>
+</div>
+
+<!-- TOPO -->
+<div id="topArea" class="hidden max-w-6xl mx-auto pt-10 px-8">
+
+  <!-- HEADER -->
+  <div class="flex justify-between items-center mb-10">
+    <h1 class="text-3xl font-bold text-gray-700">Fisiomasso Agendamentos</h1>
+    <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-xl shadow">
+      Sair
+    </button>
+  </div>
+
+  <!-- ESTATÍSTICAS -->
+  <div class="grid md:grid-cols-3 gap-6 mb-10">
+    <div class="bg-white p-6 rounded-2xl shadow">
+      <p class="text-gray-500 text-sm">Total</p>
+      <h2 id="totalCount" class="text-3xl font-bold text-gray-700">0</h2>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+      <p class="text-gray-500 text-sm">Ativos</p>
+      <h2 id="ativosCount" class="text-3xl font-bold text-green-600">0</h2>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow">
+      <p class="text-gray-500 text-sm">Cancelados</p>
+      <h2 id="canceladosCount" class="text-3xl font-bold text-red-600">0</h2>
+    </div>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="flex flex-col md:flex-row gap-4 mb-8">
+    <input id="searchInput" type="text" placeholder="Buscar por nome ou telefone..."
+      class="flex-1 border rounded-xl px-4 py-2 shadow-sm">
+
+    <select id="filtroStatus" 
+      class="border rounded-xl px-4 py-2 shadow-sm appearance-none bg-[#f1f3f3]" >
+      <option value="ativos">Ativos</option>
+      <option value="cancelados">Cancelados</option>
+      <option value="todos" >Todos</option>
+    </select>
+  </div>
+
+  <!-- CARDS -->
+  <div id="cards" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { 
+  getFirestore, 
+  collection, 
+  onSnapshot, 
+  updateDoc, 
+  doc, 
+  getDoc,
+  addDoc 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import { 
+  getAuth, 
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCWJZiUilkri_oCN4rLvmqFV5H_GhvEd6E",
+  authDomain: "fisioterapia-agendamento.firebaseapp.com",
+  projectId: "fisioterapia-agendamento",
+  storageBucket: "fisioterapia-agendamento.firebasestorage.app",
+  messagingSenderId: "928899499645",
+  appId: "1:928899499645:web:e86a365a71c85f845c1314"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+const loginModal = document.getElementById("loginModal");
+const topArea = document.getElementById("topArea");
+const cards = document.getElementById("cards");
+
+let agendamentos = [];
+
+/* LOGIN */
+window.login = async function() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch {
+    document.getElementById("loginError").innerText = "Email ou senha inválidos";
+  }
+};
+
+/* LOGOUT */
+window.logout = async function() {
+  await signOut(auth);
+};
+
+/* AUTH + ADMIN */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    loginModal.classList.remove("hidden");
+    topArea.classList.add("hidden");
+    return;
+  }
+
+  const adminRef = doc(db, "admins", user.uid);
+  const adminDoc = await getDoc(adminRef);
+
+  if (!adminDoc.exists()) {
+    alert("Você não tem permissão de administrador.");
+    await signOut(auth);
+    return;
+  }
+
+  loginModal.classList.add("hidden");
+  topArea.classList.remove("hidden");
+
+  onSnapshot(collection(db, "agendamentos"), (snapshot) => {
+    agendamentos = [];
+    snapshot.forEach(docItem => {
+      agendamentos.push({ id: docItem.id, ...docItem.data() });
+    });
+    render();
+    atualizarEstatisticas();
+  });
+});
+
+/* RENDER */
+function render() {
+  cards.innerHTML = "";
+
+  const busca = document.getElementById("searchInput").value.toLowerCase();
+  const filtro = document.getElementById("filtroStatus").value;
+
+  let lista = [...agendamentos];
+
+  lista = lista.filter(ag =>
+    ag.nome.toLowerCase().includes(busca) ||
+    (ag.telefone && ag.telefone.includes(busca))
+  );
+
+  lista.sort((a, b) => {
+    const dataA = new Date(`${a.data}T${a.horario}`);
+    const dataB = new Date(`${b.data}T${b.horario}`);
+    return dataA - dataB;
+  });
+
+  if (filtro === "ativos") {
+    lista = lista.filter(a => a.status !== "cancelado");
+  } else if (filtro === "cancelados") {
+    lista = lista.filter(a => a.status === "cancelado");
+  }
+
+  lista.forEach(ag => {
+    const isCancelado = ag.status === "cancelado";
+
+    cards.innerHTML += `
+      <div class="bg-white p-6 rounded-3xl shadow hover:shadow-xl transition ${isCancelado ? 'opacity-70' : ''}">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="font-bold text-lg">${ag.nome}</h3>
+          <span class="px-3 py-1 text-xs rounded-full font-semibold ${
+            isCancelado ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+          }">
+            ${isCancelado ? 'Cancelado' : 'Ativo'}
+          </span>
+        </div>
+
+        <p class="text-gray-600">${ag.servico}</p>
+        <p class="text-gray-500 text-sm">${ag.data} às ${ag.horario}</p>
+        <p class="text-gray-400 text-sm mb-3">${ag.telefone || ""}</p>
+
+        ${
+          isCancelado
+          ? `<button onclick="restaurar('${ag.id}')"
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-xl">
+              Restaurar
+            </button>`
+          : `<button onclick="cancelar('${ag.id}')"
+              class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-xl">
+              Cancelar
+            </button>`
+        }
+      </div>
+    `;
+  });
+}
+
+/* ESTATÍSTICAS */
+function atualizarEstatisticas() {
+  const total = agendamentos.length;
+  const cancelados = agendamentos.filter(a => a.status === "cancelado").length;
+  const ativos = total - cancelados;
+
+  document.getElementById("totalCount").innerText = total;
+  document.getElementById("ativosCount").innerText = ativos;
+  document.getElementById("canceladosCount").innerText = cancelados;
+}
+
+/* CANCELAR */
+window.cancelar = async function(id) {
+  await updateDoc(doc(db, "agendamentos", id), { status: "cancelado" });
+  await addLog("Cancelou", id);
+};
+
+/* RESTAURAR */
+window.restaurar = async function(id) {
+  await updateDoc(doc(db, "agendamentos", id), { status: "ativo" });
+  await addLog("Restaurou", id);
+};
+
+/* LOG */
+async function addLog(acao, agendamentoId) {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  await addDoc(collection(db, "logs"), {
+    admin: user.email,
+    acao,
+    agendamentoId,
+    data: new Date().toISOString()
+  });
+}
+
+document.getElementById("searchInput").addEventListener("input", render);
+document.getElementById("filtroStatus").addEventListener("change", render);
+
+
+
+
+</script>
+</body>
+</html>

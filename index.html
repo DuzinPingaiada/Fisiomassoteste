@@ -259,48 +259,67 @@ select {
 
     <form id="formAgendamento" class="space-y-6">
 
-      <div>
-        <label class="text-sm text-[#62748E]">Seu nome</label>
-        <input type="text" id="nome" required
-          class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
-      </div>
+  <div>
+    <label for="nome" class="text-sm text-[#62748E]">Seu nome</label>
+    <input 
+      type="text" 
+      id="nome"
+      name="nome"
+      autocomplete="name"
+      required
+      class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
+  </div>
 
-      <div>
-        <label class="text-sm text-[#62748E]">WhatsApp</label>
-        <input type="tel" id="telefone" required
-          class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
-      </div>
+  <div>
+    <label for="telefone" class="text-sm text-[#62748E]">WhatsApp</label>
+    <input 
+      type="tel" 
+      id="telefone"
+      name="telefone"
+      autocomplete="tel"
+      required
+      class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
+  </div>
 
-      <div>
-        <label class="text-sm text-[#62748E]">Serviço</label>
-        <select id="servico" required
-          class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
-           <option value="" disabled selected hidden>Selecione</option>
-          <option value="Avaliação Pré-Operatório">Avaliação Pré-Operatório</option>
-          <option value="Avaliação Pós-Operatório">Avaliação Pós-Operatório</option>
-          <option value="Reabilitação">Reabilitação</option>
-          <option value="Liberação Miofascial">Liberação Miofascial</option>
-          <option value="Outros">Outros</option>
-        </select>
-      </div>
+  <div>
+    <label for="servico" class="text-sm text-[#62748E]">Serviço</label>
+    <select 
+      id="servico"
+      name="servico"
+      required
+      class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
+      <option value="" disabled selected hidden>Selecione</option>
+      <option value="Avaliação Pré-Operatório">Avaliação Pré-Operatório</option>
+      <option value="Avaliação Pós-Operatório">Avaliação Pós-Operatório</option>
+      <option value="Reabilitação">Reabilitação</option>
+      <option value="Liberação Miofascial">Liberação Miofascial</option>
+      <option value="Outros">Outros</option>
+    </select>
+  </div>
 
-      <div>
-      <label class="text-sm text-[#62748E]">Data</label>
-      <input type="text" id="data" placeholder="Selecione a data"
-        class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
-      </div>
+  <div>
+    <label for="data" class="text-sm text-[#62748E]">Data</label>
+    <input 
+      type="text"
+      id="data"
+      name="data"
+      placeholder="Selecione a data"
+      autocomplete="off"
+      required
+      class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
+  </div>
 
-      <div>
-        <p class="text-sm text-[#62748E] mb-4">Horários disponíveis</p>
-        <div id="horariosContainer" class="grid grid-cols-3 gap-4"></div>
-      </div>
+  <div>
+    <p class="text-sm text-[#62748E] mb-4">Horários disponíveis</p>
+    <div id="horariosContainer" class="grid grid-cols-3 gap-4"></div>
+  </div>
 
-      <button type="submit"
-        class="w-full py-4 mt-4 bg-primary hover:bg-primaryHover text-white font-medium rounded-2xl transition duration-300 shadow-md hover:shadow-lg">
-        Confirmar Agendamento
-      </button>
+  <button type="submit"
+    class="w-full py-4 mt-4 bg-primary hover:bg-primaryHover text-white font-medium rounded-2xl transition duration-300 shadow-md hover:shadow-lg">
+    Confirmar Agendamento
+  </button>
 
-    </form>
+</form>
 
     <p id="mensagem" class="text-center mt-6 text-sm font-medium"></p>
 

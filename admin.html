@@ -116,6 +116,7 @@ const topArea = document.getElementById("topArea");
 const cards = document.getElementById("cards");
 
 let agendamentos = [];
+let unsubscribeAgendamentos = null;
 
 /* LOGIN */
 window.login = async function() {
@@ -136,12 +137,27 @@ window.logout = async function() {
 
 /* AUTH + ADMIN */
 onAuthStateChanged(auth, async (user) => {
+
+  // 🔴 Se NÃO estiver logado
   if (!user) {
+
+    console.log("Usuário não logado");
+
+    // Cancela listener se existir
+    if (unsubscribeAgendamentos) {
+      unsubscribeAgendamentos();
+      unsubscribeAgendamentos = null;
+    }
+
     loginModal.classList.remove("hidden");
     topArea.classList.add("hidden");
     return;
   }
 
+  // ✅ Aqui o usuário EXISTE
+  console.log("UID LOGADO:", user.uid);
+
+  // 🔎 Verifica se é admin
   const adminRef = doc(db, "admins", user.uid);
   const adminDoc = await getDoc(adminRef);
 
@@ -154,14 +170,22 @@ onAuthStateChanged(auth, async (user) => {
   loginModal.classList.add("hidden");
   topArea.classList.remove("hidden");
 
-  onSnapshot(collection(db, "agendamentos"), (snapshot) => {
-    agendamentos = [];
-    snapshot.forEach(docItem => {
-      agendamentos.push({ id: docItem.id, ...docItem.data() });
-    });
-    render();
-    atualizarEstatisticas();
-  });
+  // 🔁 Evita múltiplos listeners
+  if (unsubscribeAgendamentos) {
+    unsubscribeAgendamentos();
+  }
+
+  unsubscribeAgendamentos = onSnapshot(
+    collection(db, "agendamentos"),
+    (snapshot) => {
+      agendamentos = [];
+      snapshot.forEach(docItem => {
+        agendamentos.push({ id: docItem.id, ...docItem.data() });
+      });
+      render();
+      atualizarEstatisticas();
+    }
+  );
 });
 
 /* RENDER */

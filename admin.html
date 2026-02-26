@@ -198,8 +198,8 @@ function render() {
   let lista = [...agendamentos];
 
   lista = lista.filter(ag =>
-    ag.nome.toLowerCase().includes(busca) ||
-    (ag.telefone && ag.telefone.includes(busca))
+  ag.nomeCompleto?.toLowerCase().includes(busca) ||
+  (ag.whatsapp && ag.whatsapp.includes(busca))
   );
 
   lista.sort((a, b) => {
@@ -220,7 +220,7 @@ function render() {
     cards.innerHTML += `
       <div class="bg-white p-6 rounded-3xl shadow hover:shadow-xl transition ${isCancelado ? 'opacity-70' : ''}">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="font-bold text-lg">${ag.nome}</h3>
+          <h3 class="font-bold text-lg">${ag.nomeCompleto}</h3>
           <span class="px-3 py-1 text-xs rounded-full font-semibold ${
             isCancelado ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
           }">
@@ -230,7 +230,7 @@ function render() {
 
         <p class="text-gray-600">${ag.servico}</p>
         <p class="text-gray-500 text-sm">${ag.data} às ${ag.horario}</p>
-        <p class="text-gray-400 text-sm mb-3">${ag.telefone || ""}</p>
+        <p class="text-gray-400 text-sm mb-3">${ag.whatsapp || ""}</p>
 
         ${
           isCancelado

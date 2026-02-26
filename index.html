@@ -259,43 +259,52 @@ select {
 
     <form id="formAgendamento" class="space-y-6">
 
-  <div>
-    <label for="nome" class="text-sm text-[#62748E]">Seu nome</label>
-    <input 
-      type="text" 
-      id="nome"
-      name="nome"
-      autocomplete="name"
-      required
-      class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
-  </div>
+ <!-- NOME COMPLETO -->
+<div>
+  <label for="nomeCompleto" class="text-sm text-[#62748E]">Nome e Sobrenome</label>
+  <input 
+    type="text"
+    id="nomeCompleto"
+    name="nomeCompleto"
+    required
+    minlength="5"
+    maxlength="80"
+    class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition"
+    placeholder="Nome e Sobrenome"
+  >
+</div>
 
-  <div>
-    <label for="telefone" class="text-sm text-[#62748E]">WhatsApp</label>
-    <input 
-      type="tel" 
-      id="telefone"
-      name="telefone"
-      autocomplete="tel"
-      required
-      class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
-  </div>
+<!-- WHATSAPP -->
+<div>
+  <label for="whatsapp" class="text-sm text-[#62748E]">WhatsApp</label>
+  <input 
+    type="text"
+    id="whatsapp"
+    name="whatsapp"
+    required
+    pattern="[0-9]{10,11}"
+    maxlength="11"
+    class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition"
+    placeholder="Somente números (DDD + número)"
+  >
+</div>
 
-  <div>
-    <label for="servico" class="text-sm text-[#62748E]">Serviço</label>
-    <select 
-      id="servico"
-      name="servico"
-      required
-      class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
-      <option value="" disabled selected hidden>Selecione</option>
-      <option value="Avaliação Pré-Operatório">Avaliação Pré-Operatório</option>
-      <option value="Avaliação Pós-Operatório">Avaliação Pós-Operatório</option>
-      <option value="Reabilitação">Reabilitação</option>
-      <option value="Liberação Miofascial">Liberação Miofascial</option>
-      <option value="Outros">Outros</option>
-    </select>
-  </div>
+<!-- SERVIÇO -->
+<div>
+  <label for="servico" class="text-sm text-[#62748E]">Serviço</label>
+  <select 
+    id="servico"
+    name="servico"
+    required
+    class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
+    <option value="" disabled selected hidden>Selecione</option>
+    <option value="Avaliação Pré-Operatório">Avaliação Pré-Operatório</option>
+    <option value="Avaliação Pós-Operatório">Avaliação Pós-Operatório</option>
+    <option value="Reabilitação">Reabilitação</option>
+    <option value="Liberação Miofascial">Liberação Miofascial</option>
+    <option value="Outros">Outros</option>
+  </select>
+</div>
 
   <div>
     <label for="data" class="text-sm text-[#62748E]">Data</label>
@@ -372,6 +381,36 @@ const form = document.getElementById("formAgendamento");
 const horariosContainer = document.getElementById("horariosContainer");
 const mensagem = document.getElementById("mensagem");
 
+// =============================
+// 🔐 VALIDAÇÃO PERSONALIZADA
+// =============================
+function validarFormulario(nomeCompleto, whatsapp) {
+
+  const regexNomeCompleto = /^[A-Za-zÀ-ÿ\s]+$/;
+  const regexWhats = /^[0-9]{10,11}$/;
+
+  if (!nomeCompleto || 
+      nomeCompleto.length < 5 || 
+      nomeCompleto.length > 80 || 
+      !regexNomeCompleto.test(nomeCompleto)) {
+
+    mostrarErro("Digite um nome válido (apenas letras).");
+    return false;
+  }
+
+  if (!regexWhats.test(whatsapp)) {
+    mostrarErro("WhatsApp deve conter apenas números (DDD + número).");
+    return false;
+  }
+
+  return true;
+}
+
+function mostrarErro(msg) {
+  mensagem.innerText = msg;
+  mensagem.style.color = "red";
+}
+
 // 🔥 GERA HORÁRIOS DINÂMICOS
 function gerarHorarios(dataSelecionada) {
   const diaSemana = new Date(dataSelecionada + "T00:00:00").getDay();
@@ -408,7 +447,6 @@ async function carregarHorarios(data) {
 
   const snapshot = await getDocs(q);
 
-  // 🔥 agora ignora cancelados
   const ocupados = snapshot.docs
     .filter(docItem => docItem.data().status === "ativo")
     .map(docItem => docItem.data().horario);
@@ -463,18 +501,25 @@ async function reagendarAgendamento(id, novaData, novoHorario) {
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  const nomeCompleto = document.getElementById("nomeCompleto").value;
+  const whatsapp = document.getElementById("whatsapp").value.trim();
+  const servico = document.getElementById("servico").value;
+  const data = document.getElementById("data").value;
+
   if (!horarioSelecionado) {
-    alert("Selecione um horário");
+    mostrarErro("Selecione um horário.");
     return;
   }
 
+  if (!validarFormulario(nomeCompleto, whatsapp)) return;
+
   await addDoc(collection(db, "agendamentos"), {
-    nome: document.getElementById("nome").value,
-    telefone: document.getElementById("telefone").value,
-    servico: document.getElementById("servico").value,
-    data: document.getElementById("data").value,
+    nomeCompleto: nomeCompleto,
+    whatsapp: whatsapp,
+    servico: servico,
+    data: data,
     horario: horarioSelecionado,
-    status: "ativo", // 🔥 novo campo
+    status: "ativo",
     criadoEm: new Date()
   });
 

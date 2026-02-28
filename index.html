@@ -1,186 +1,90 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fisiomasso</title>
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
 
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<!-- Flatpickr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
 
-  <link rel="shortcut icon" href="assets/favicon.svg" type="image/x-icon">
+<!-- reCAPTCHA v3 -->
+<script src="https://www.google.com/recaptcha/api.js?render=6Ldee3osAAAAAAFLO71gBV8Ocf4auBVRIbkjyWgT"></script>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+body { font-family: 'Inter', sans-serif; background:white; }
+.agendamento { display:flex; justify-content:center; padding:80px 20px; background:#f8f9fa; }
+.agendamento-box { background:white; padding:40px; border-radius:16px; width:100%; max-width:500px; box-shadow:0 10px 40px rgba(0,0,0,0.05); }
+.agendamento h2 { text-align:center; margin-bottom:30px; font-weight:500; }
+.input-group { position:relative; margin-bottom:20px; }
+.input-group input, select, input[type="date"] { width:100%; padding:14px; border:1px solid #ddd; border-radius:8px; margin-bottom:20px; outline:none; }
+#horariosContainer { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
+.horario-btn { padding:12px; border-radius:16px; border:1px solid #E2E8F0; background:white; font-weight:500; transition:0.3s ease; }
+.horario-btn:hover { border-color:#0092B8; color:#0092B8; }
+.horario-btn.selected { background:#0092B8; color:white; border-color:#0092B8; }
+.horario-btn:disabled { opacity:0.4; cursor:not-allowed; }
+button { padding:14px; background:#111; color:white; border:none; border-radius:8px; cursor:pointer; }
+select { appearance:none; -webkit-appearance:none; -moz-appearance:none; background-image:none; }
+</style>
 
-  <title>Fisiomasso</title>
-
-
-  <style>
-    .agendamento {
-  display: flex;
-  justify-content: center;
-  padding: 80px 20px;
-  background: #f8f9fa;
-}
-
-.agendamento-box {
-  background: white;
-  padding: 40px;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 500px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-}
-
-.agendamento h2 {
-  text-align: center;
-  margin-bottom: 30px;
-  font-weight: 500;
-}
-
-.input-group {
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.input-group input {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  outline: none;
-}
-
-select, input[type="date"] {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-#horariosContainer {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.horario-btn {
-  padding: 12px;
-  border-radius: 16px;
-  border: 1px solid #E2E8F0;
-  background: white;
-  font-weight: 500;
-  transition: 0.3s ease;
-}
-
-.horario-btn:hover {
-  border-color: #0092B8;
-  color: #0092B8;
-}
-
-.horario-btn.selected {
-  background: #0092B8;
-  color: white;
-  border-color: #0092B8;
-}
-
-.horario-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-button {
-  padding: 14px;
-  background: #111;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-
-
-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: none;
-}
-  </style>
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            inter: ['Inter', 'sans-serif'],
-          },
-          colors: {
-            primary: '#0092B8',
-            primaryHover: '#00A3CF',
-            secondary: '#005F78',
-          }
-        }
-      }
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { inter: ['Inter', 'sans-serif'] },
+      colors: { primary: '#0092B8', primaryHover: '#00A3CF', secondary: '#005F78' }
     }
-  </script>
+  }
+}
+</script>
 
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
 </head>
-
-<body class="font-inter bg-white flex flex-col items-center">
+<body class="flex flex-col items-center">
 
 <!-- HEADER -->
 <header class="fixed top-0 z-10 bg-white w-full flex justify-center">
-  <nav class="w-full max-w-[1120px] flex items-center justify-between h-16 my-4 px-4">
-    <img src="assets/Logofisiomasso.png" alt="Logo" class="w-[166px] h-[56px]">
-
-    <ul class="hidden md:flex gap-12 text-[#45556C]">
-      <li><a href="#">Início</a></li>
-      <li><a href="#servicos">Serviços</a></li>
-      <li><a href="#sobre">Sobre</a></li>
-    </ul>
-
-    <a href="https://api.whatsapp.com/send?phone=5517981414835" 
-      class="bg-primary hover:bg-primaryHover text-white px-6 py-2 rounded-full text-sm">
-      Falar agora
-    </a>
-  </nav>
+<nav class="w-full max-w-[1120px] flex items-center justify-between h-16 my-4 px-4">
+<img src="assets/Logofisiomasso.png" alt="Logo" class="w-[166px] h-[56px]">
+<ul class="hidden md:flex gap-12 text-[#45556C]">
+<li><a href="#">Início</a></li>
+<li><a href="#servicos">Serviços</a></li>
+<li><a href="#sobre">Sobre</a></li>
+</ul>
+<a href="https://api.whatsapp.com/send?phone=5517981414835" class="bg-primary hover:bg-primaryHover text-white px-6 py-2 rounded-full text-sm">Falar agora</a>
+</nav>
 </header>
 
 <main class="w-full flex flex-col items-center mt-[110px]">
 
+<!-- HERO -->
 <section class="w-full max-w-[1120px] flex flex-col md:flex-row px-4 mb-14 md:gap-[73px]">
-  <div class="flex flex-col max-w-[626px]">
-    <div class="bg-[#CEFAFE] px-4 py-2 rounded-lg w-fit flex items-center gap-2 my-[24px]">
-      <i class="ph ph-star text-primary"></i>
-      <span class="text-primary font-semibold">5.0 em avaliações</span>
-    </div>
-
-    <h1 class="text-3xl md:text-5xl md:leading-[56px]">
-      Fisioterapia especializada para saúde, movimento e qualidade de vida
-    </h1>
-
-    <p class="text-[#62748E] text-lg mt-5 max-w-[547px]">
-      Cuidamos do seu corpo unindo prevenção, reabilitação e preparação física.
-    </p>
-
-    <a href="https://api.whatsapp.com/send?phone=5517981414835">
-      <button class="bg-primary hover:bg-primaryHover text-white px-8 py-4 rounded-full mt-8">
-        FALAR AGORA
-      </button>
-    </a>
-  </div>
-
-  <img src="assets/IMGhero.png" class="w-full my-[24px] md:flex md:w-auto"/>
+<div class="flex flex-col max-w-[626px]">
+<div class="bg-[#CEFAFE] px-4 py-2 rounded-lg w-fit flex items-center gap-2 my-[24px]">
+<i class="ph ph-star text-primary"></i>
+<span class="text-primary font-semibold">5.0 em avaliações</span>
+</div>
+<h1 class="text-3xl md:text-5xl md:leading-[56px]">
+Fisioterapia especializada para saúde, movimento e qualidade de vida
+</h1>
+<p class="text-[#62748E] text-lg mt-5 max-w-[547px]">
+Cuidamos do seu corpo unindo prevenção, reabilitação e preparação física.
+</p>
+<a href="https://api.whatsapp.com/send?phone=5517981414835">
+<button class="bg-primary hover:bg-primaryHover text-white px-8 py-4 rounded-full mt-8">
+FALAR AGORA
+</button>
+</a>
+</div>
+<img src="assets/IMGhero.png" class="w-full my-[24px] md:flex md:w-auto"/>
 </section>
 
 <section class="w-full bg-[#E2E8F0] py-14">
@@ -242,117 +146,39 @@ select {
 
 </section>
 
-<section class="w-full py-24 bg-[#F7FBFD] flex justify-center">
-  <div class="w-full max-w-[640px] bg-white rounded-[32px] shadow-[0_20px_60px_rgba(0,0,0,0.06)] p-12 border border-[#E6F4F8]">
 
-    <div class="text-center mb-12">
-      <span class="text-primary text-sm font-semibold tracking-wide uppercase">
-        AGENDAMENTO ONLINE
-      </span>
-      <h2 class="text-3xl mt-4 font-semibold text-secondary">
-        Agende sua Avaliação
-      </h2>
-      <p class="text-[#62748E] mt-3 text-[15px]">
-        Escolha o melhor dia e horário para cuidar da sua saúde
-      </p>
-    </div>
 
-    <form id="formAgendamento" class="space-y-6">
+<!-- FORMULÁRIO DE AGENDAMENTO -->
+<section class="w-full py-24 bg-[#F7FBFD] flex justify-center"> <div class="w-full max-w-[640px] bg-white rounded-[32px] shadow p-12 border"> <div class="text-center mb-12"> <span class="text-primary text-sm font-semibold uppercase"> SOLICITAR ATENDIMENTO </span> <h2 class="text-3xl mt-4 font-semibold text-secondary"> Solicite seu Atendimento </h2> <p class="text-[#62748E] mt-3 text-[15px]"> Nossa equipe entrará em contato para agendar o melhor dia e horário. </p> </div> <form id="formAgendamento" class="space-y-6"> <div> <label class="text-sm text-[#62748E]">Nome Completo</label> <input type="text" id="nomeCompleto" required minlength="5" maxlength="80" class="w-full mt-2 px-4 py-3 border rounded-2xl"> </div> <div> <label class="text-sm text-[#62748E]">WhatsApp</label> <input type="text" id="whatsapp" required pattern="[0-9]{10,11}" class="w-full mt-2 px-4 py-3 border rounded-2xl" placeholder="Somente números"> </div> <div> <label class="text-sm text-[#62748E]">Serviço</label> <select id="servico" required class="w-full mt-2 px-4 py-3 border rounded-2xl"> <option value="" disabled selected>Selecione</option> <option>Avaliação Pré-Operatório</option> <option>Avaliação Pós-Operatório</option> <option>Reabilitação</option> <option>Liberação Miofascial</option> <option>Fortalecimento</option> <option>Outros</option> </select> </div> <button type="submit" class="w-full py-4 bg-primary text-white rounded-2xl"> Solicitar Atendimento </button> </form> <p id="mensagem" class="text-center mt-6 text-sm font-medium"></p> </div> </section>
 
- <!-- NOME COMPLETO -->
-<div>
-  <label for="nomeCompleto" class="text-sm text-[#62748E]">Nome e Sobrenome</label>
-  <input 
-    type="text"
-    id="nomeCompleto"
-    name="nomeCompleto"
-    required
-    minlength="5"
-    maxlength="80"
-    class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition"
-    placeholder="Nome e Sobrenome"
-  >
-</div>
-
-<!-- WHATSAPP -->
-<div>
-  <label for="whatsapp" class="text-sm text-[#62748E]">WhatsApp</label>
-  <input 
-    type="text"
-    id="whatsapp"
-    name="whatsapp"
-    required
-    pattern="[0-9]{10,11}"
-    maxlength="11"
-    class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition"
-    placeholder="Somente números (DDD + número)"
-  >
-</div>
-
-<!-- SERVIÇO -->
-<div>
-  <label for="servico" class="text-sm text-[#62748E]">Serviço</label>
-  <select 
-    id="servico"
-    name="servico"
-    required
-    class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
-    <option value="" disabled selected hidden>Selecione</option>
-    <option value="Avaliação Pré-Operatório">Avaliação Pré-Operatório</option>
-    <option value="Avaliação Pós-Operatório">Avaliação Pós-Operatório</option>
-    <option value="Reabilitação">Reabilitação</option>
-    <option value="Liberação Miofascial">Liberação Miofascial</option>
-    <option value="Outros">Outros</option>
-  </select>
-</div>
-
-  <div>
-    <label for="data" class="text-sm text-[#62748E]">Data</label>
-    <input 
-      type="text"
-      id="data"
-      name="data"
-      placeholder="Selecione a data"
-      autocomplete="off"
-      required
-      class="w-full mt-2 px-4 py-3 border border-[#E2E8F0] rounded-2xl focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition">
-  </div>
-
-  <div>
-    <p class="text-sm text-[#62748E] mb-4">Horários disponíveis</p>
-    <div id="horariosContainer" class="grid grid-cols-3 gap-4"></div>
-  </div>
-
-  <button type="submit"
-    class="w-full py-4 mt-4 bg-primary hover:bg-primaryHover text-white font-medium rounded-2xl transition duration-300 shadow-md hover:shadow-lg">
-    Confirmar Agendamento
-  </button>
-
-</form>
-
-    <p id="mensagem" class="text-center mt-6 text-sm font-medium"></p>
-
-  </div>
+<!-- SOBRE -->
+<section id="sobre" class="py-14 text-center max-w-[744px] w-[90%]">
+<span class="bg-[#CEFAFE] text-primary font-semibold px-4 py-2 rounded-lg">Sobre nós</span>
+<h2 class="text-4xl md:text-5xl mt-6">Conheça a Fisiomasso</h2>
+<p class="mt-5 text-[#62748E] md:text-[18px] font-medium">
+Há mais de 4 anos, acreditamos que movimento é qualidade de vida. Nosso trabalho é focado no cuidado individualizado, unindo fisioterapia, massoterapia e preparação física para promover saúde, prevenção e reabilitação de forma completa e eficaz
+</p>
+<a href="https://api.whatsapp.com/send?phone=5517981414835">
+<button class="bg-primary hover:bg-primaryHover text-white px-8 py-4 rounded-full mt-8">FALAR AGORA</button>
+</a>
 </section>
 
+<!-- FOOTER -->
+<footer class="py-10 text-center text-xs text-[#90A1B9]">
+<p>© Fissiomasso, 2026. Todos os direitos reservados.</p>
+<p>R. São João, 29 - Patrimonio de São João Batista, Olímpia - SP, 15400-065</p>
+</footer>
+
+<!-- FIREBASE + reCAPTCHA -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
-  getFirestore, 
-  collection, 
-  addDoc, 
-  query, 
-  where, 
-  getDocs,
-  updateDoc,
-  doc
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSy....",
-  authDomain: "fisiomasso.firebaseapp.com",
+  apiKey: "AIzaSyCWJZiUilkri_oCN4rLvmqFV5H_GhvEd6E",
+  authDomain: "fisioterapia-agendamento.firebaseapp.com",
   projectId: "fisioterapia-agendamento",
-  storageBucket: "fisiomasso.appspot.com",
+  storageBucket: "fisioterapia-agendamento.firebasestorage.app",
   messagingSenderId: "928899499645",
   appId: "1:928899499645:web:e86a365a71c85f845c1314"
 };
@@ -360,204 +186,36 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 🔥 CALENDÁRIO
-flatpickr("#data", {
-  locale: "pt",
-  minDate: "today",
-  dateFormat: "Y-m-d",
-  disable: [
-    function(date) {
-      return (date.getDay() === 0 || date.getDay() === 6);
-    }
-  ],
-  onChange: function(selectedDates, dateStr) {
-    carregarHorarios(dateStr);
-  }
-});
-
-let horarioSelecionado = null;
-
 const form = document.getElementById("formAgendamento");
-const horariosContainer = document.getElementById("horariosContainer");
 const mensagem = document.getElementById("mensagem");
 
-// =============================
-// 🔐 VALIDAÇÃO PERSONALIZADA
-// =============================
-function validarFormulario(nomeCompleto, whatsapp) {
-
-  const regexNomeCompleto = /^[A-Za-zÀ-ÿ\s]+$/;
-  const regexWhats = /^[0-9]{10,11}$/;
-
-  if (!nomeCompleto || 
-      nomeCompleto.length < 5 || 
-      nomeCompleto.length > 80 || 
-      !regexNomeCompleto.test(nomeCompleto)) {
-
-    mostrarErro("Digite um nome válido (apenas letras).");
-    return false;
-  }
-
-  if (!regexWhats.test(whatsapp)) {
-    mostrarErro("WhatsApp deve conter apenas números (DDD + número).");
-    return false;
-  }
-
-  return true;
-}
-
-function mostrarErro(msg) {
-  mensagem.innerText = msg;
-  mensagem.style.color = "red";
-}
-
-// 🔥 GERA HORÁRIOS DINÂMICOS
-function gerarHorarios(dataSelecionada) {
-  const diaSemana = new Date(dataSelecionada + "T00:00:00").getDay();
-  let horarios = [];
-
-  if (diaSemana >= 1 && diaSemana <= 4) {
-    horarios = [
-      "08:00","09:00","10:00","11:00",
-      "15:00","16:00","17:00","18:00","19:00"
-    ];
-  }
-
-  if (diaSemana === 5) {
-    horarios = [
-      "08:00","09:00","10:00","11:00",
-      "15:00","16:00","17:00","18:00"
-    ];
-  }
-
-  return horarios;
-}
-
-// 🔥 CARREGA HORÁRIOS DISPONÍVEIS
-async function carregarHorarios(data) {
-  horariosContainer.innerHTML = "";
-  horarioSelecionado = null;
-
-  if (!data) return;
-
-  const q = query(
-    collection(db, "agendamentos"),
-    where("data", "==", data)
-  );
-
-  const snapshot = await getDocs(q);
-
-  const ocupados = snapshot.docs
-    .filter(docItem => docItem.data().status === "ativo")
-    .map(docItem => docItem.data().horario);
-
-  const horariosDoDia = gerarHorarios(data);
-
-  horariosDoDia.forEach(h => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.innerText = h;
-    btn.classList.add("horario-btn");
-
-    if (ocupados.includes(h)) {
-      btn.disabled = true;
-      btn.style.opacity = "0.4";
-      btn.style.cursor = "not-allowed";
-    } else {
-      btn.onclick = () => {
-        document.querySelectorAll(".horario-btn")
-          .forEach(b => b.classList.remove("selected"));
-        btn.classList.add("selected");
-        horarioSelecionado = h;
-      };
-    }
-
-    horariosContainer.appendChild(btn);
-  });
-}
-
-// 🔥 CANCELAR AGENDAMENTO
-async function cancelarAgendamento(id) {
-  await updateDoc(doc(db, "agendamentos", id), {
-    status: "cancelado"
-  });
-
-  alert("Agendamento cancelado com sucesso!");
-  carregarHorarios(document.getElementById("data").value);
-}
-
-// 🔥 REAGENDAR AGENDAMENTO
-async function reagendarAgendamento(id, novaData, novoHorario) {
-  await updateDoc(doc(db, "agendamentos", id), {
-    data: novaData,
-    horario: novoHorario,
-    status: "ativo"
-  });
-
-  alert("Agendamento reagendado com sucesso!");
-}
-
-// 🔥 ENVIO DO FORMULÁRIO
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const nomeCompleto = document.getElementById("nomeCompleto").value;
+  const nomeCompleto = document.getElementById("nomeCompleto").value.trim();
   const whatsapp = document.getElementById("whatsapp").value.trim();
   const servico = document.getElementById("servico").value;
-  const data = document.getElementById("data").value;
 
-  if (!horarioSelecionado) {
-    mostrarErro("Selecione um horário.");
-    return;
-  }
-
-  if (!validarFormulario(nomeCompleto, whatsapp)) return;
+  // ✅ reCAPTCHA v3
+  const token = await grecaptcha.execute('6Ldee3osAAAAAAFLO71gBV8Ocf4auBVRIbkjyWgT', {action:'submit'});
 
   await addDoc(collection(db, "agendamentos"), {
-    nomeCompleto: nomeCompleto,
-    whatsapp: whatsapp,
-    servico: servico,
-    data: data,
-    horario: horarioSelecionado,
-    status: "ativo",
-    criadoEm: new Date()
+    nomeCompleto,
+    whatsapp,
+    servico,
+    status: "pendente",
+    data: null,
+    horario: null,
+    funcionario: null,
+    criadoEm: new Date(),
+    recaptchaToken: token
   });
 
-  mensagem.innerText = "Agendamento confirmado com sucesso!";
+  mensagem.innerText = "Solicitação enviada! Entraremos em contato.";
   mensagem.style.color = "green";
-
   form.reset();
-  horariosContainer.innerHTML = "";
-  horarioSelecionado = null;
 });
 </script>
-
-</section>
-
-<!-- SOBRE -->
-<section id="sobre" class="py-14 text-center max-w-[744px] w-[90%]">
-  <span class="bg-[#CEFAFE] text-primary font-semibold px-4 py-2 rounded-lg">
-    Sobre nós
-  </span>
-
-  <h2 class="text-4xl md:text-5xl mt-6">Conheça a Fisiomasso</h2>
-
-  <p class="mt-5 text-[#62748E] md:text-[18px] font-medium">
-   Há mais de 4 anos, acreditamos que movimento é qualidade de vida. Nosso trabalho é focado no cuidado individualizado, unindo fisioterapia, massoterapia e preparação física para promover saúde, prevenção e reabilitação de forma completa e eficaz
-  </p>
-
-  <a href="https://api.whatsapp.com/send?phone=5517981414835">
-      <button class="bg-primary hover:bg-primaryHover text-white px-8 py-4 rounded-full mt-8">
-        FALAR AGORA
-      </button>
-  </a>
-</section>
-
-<!-- FOOTER -->
-<footer class="py-10 text-center text-xs text-[#90A1B9]">
-  <p> © Fissiomasso, 2026. Todos os direitos reservados.</p>
-  <p>R. São João, 29 - Patrimonio de São João Batista, Olímpia - SP, 15400-065</p>
-</footer>
 
 </main>
 </body>

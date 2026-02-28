@@ -3,101 +3,113 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel Administrativo</title>
-
+<title>Painel ADMIN Fisiomasso</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+  .fade-in { animation: fadeIn 0.5s ease forwards; opacity: 0; }
+  @keyframes fadeIn { to { opacity: 1; } }
+  /* Remove seta do select */
+  select { -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none; }
+</style>
 </head>
+<body class="bg-gray-50 min-h-screen font-sans">
 
-<body class="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen font-sans">
-
-<!-- LOGIN -->
-<div id="loginModal" class="fixed inset-0 bg-black/40 flex justify-center items-center z-50 backdrop-blur-sm">
-  <div class="bg-white w-[380px] p-8 rounded-3xl shadow-2xl">
-    <h2 class="text-2xl font-bold mb-6 text-center text-gray-700">Login Admin</h2>
-
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="fixed inset-0 bg-black/50 flex justify-center items-center z-50 backdrop-blur-sm">
+  <div class="bg-white w-[400px] p-10 rounded-3xl shadow-2xl transform transition-all duration-500 scale-95">
+    <h2 class="text-3xl font-bold mb-6 text-center text-gray-700">Painel Admin</h2>
     <input id="email" type="email" placeholder="Email"
-      class="w-full border rounded-xl px-4 py-3 mb-4">
-
+      class="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4 focus:ring-2 focus:ring-blue-400">
     <input id="password" type="password" placeholder="Senha"
-      class="w-full border rounded-xl px-4 py-3 mb-5">
-
+      class="w-full border border-gray-300 rounded-xl px-4 py-3 mb-5 focus:ring-2 focus:ring-blue-400">
     <button onclick="login()"
-      class="w-full bg-blue-500 hover:bg-blue-600 transition text-white py-3 rounded-xl font-semibold shadow-md">
-      Entrar
+      class="w-full bg-blue-600 hover:bg-blue-700 transition text-white py-3 rounded-xl font-semibold shadow-md flex justify-center items-center gap-2">
+      <i class="fas fa-right-to-bracket"></i> Entrar
     </button>
-
     <p id="loginError" class="text-red-500 mt-4 text-sm text-center"></p>
   </div>
 </div>
 
-<!-- TOPO -->
-<div id="topArea" class="hidden max-w-6xl mx-auto pt-10 px-8">
+<!-- PAINEL -->
+<div id="topArea" class="hidden max-w-7xl mx-auto pt-10 px-4">
 
   <!-- HEADER -->
-  <div class="flex justify-between items-center mb-10">
-    <h1 class="text-3xl font-bold text-gray-700">Fisiomasso Agendamentos</h1>
-    <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-xl shadow">
-      Sair
+  <div class="flex justify-between items-center mb-10 flex-wrap gap-4">
+    <h1 class="text-4xl font-bold text-gray-700 flex items-center gap-3">
+      <i class="fas fa-clinic-medical text-blue-500"></i> Fisiomasso Painel-Admin
+    </h1>
+    <div class="flex gap-3 flex-wrap">
+      <button onclick="toggleForm()"
+        class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-xl shadow flex items-center gap-2">
+        <i class="fas fa-plus"></i> Novo Agendamento
+      </button>
+      <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-xl shadow flex items-center gap-2">
+        <i class="fas fa-arrow-right-from-bracket"></i> Sair
+      </button>
+    </div>
+  </div>
+
+  <!-- FORMULÁRIO ADMIN -->
+  <div id="formAdmin" class="hidden bg-white p-6 rounded-3xl shadow mb-8">
+    <h2 class="text-xl font-bold text-gray-700 mb-4">Criar Agendamento</h2>
+    <div class="grid md:grid-cols-2 gap-4 mb-4">
+      <input type="text" id="nomeAdmin" placeholder="Nome do Cliente" class="border px-3 py-2 rounded-xl focus:ring-2 focus:ring-blue-400">
+      <input type="text" id="whatsappAdmin" placeholder="WhatsApp" class="border px-3 py-2 rounded-xl focus:ring-2 focus:ring-blue-400">
+      <input type="text" id="servicoAdmin" placeholder="Serviço" class="border px-3 py-2 rounded-xl focus:ring-2 focus:ring-blue-400">
+      <input type="date" id="dataAdmin" class="border px-3 py-2 rounded-xl focus:ring-2 focus:ring-blue-400">
+      <input type="time" id="horaAdmin" class="border px-3 py-2 rounded-xl focus:ring-2 focus:ring-blue-400">
+      <select id="funcAdmin" class="border px-3 py-2 rounded-xl focus:ring-2 focus:ring-blue-400">
+        <option value="">Selecione Funcionário</option>
+      </select>
+    </div>
+    <button onclick="criarAgendamento()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-xl flex items-center gap-2">
+      <i class="fas fa-check"></i> Confirmar Agendamento
     </button>
   </div>
 
   <!-- ESTATÍSTICAS -->
-  <div class="grid md:grid-cols-3 gap-6 mb-10">
-    <div class="bg-white p-6 rounded-2xl shadow">
+  <div class="grid md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-3xl shadow hover:shadow-lg transition text-center">
       <p class="text-gray-500 text-sm">Total</p>
       <h2 id="totalCount" class="text-3xl font-bold text-gray-700">0</h2>
     </div>
-
-    <div class="bg-white p-6 rounded-2xl shadow">
-      <p class="text-gray-500 text-sm">Ativos</p>
-      <h2 id="ativosCount" class="text-3xl font-bold text-green-600">0</h2>
+    <div class="bg-white p-6 rounded-3xl shadow hover:shadow-lg transition text-center">
+      <p class="text-gray-500 text-sm">Pendentes</p>
+      <h2 id="pendentesCount" class="text-3xl font-bold text-yellow-500">0</h2>
     </div>
-
-    <div class="bg-white p-6 rounded-2xl shadow">
+    <div class="bg-white p-6 rounded-3xl shadow hover:shadow-lg transition text-center">
+      <p class="text-gray-500 text-sm">Confirmados</p>
+      <h2 id="confirmadosCount" class="text-3xl font-bold text-green-600">0</h2>
+    </div>
+    <div class="bg-white p-6 rounded-3xl shadow hover:shadow-lg transition text-center">
       <p class="text-gray-500 text-sm">Cancelados</p>
-      <h2 id="canceladosCount" class="text-3xl font-bold text-red-600">0</h2>
+      <h2 id="canceladosCount" class="text-3xl font-bold text-red-500">0</h2>
     </div>
   </div>
 
   <!-- FILTROS -->
-  <div class="flex flex-col md:flex-row gap-4 mb-8">
-    <input id="searchInput" type="text" placeholder="Buscar por nome ou telefone..."
-      class="flex-1 border rounded-xl px-4 py-2 shadow-sm">
-
-    <select id="filtroStatus" 
-      class="border rounded-xl px-4 py-2 shadow-sm appearance-none bg-[#f1f3f3]" >
-      <option value="ativos">Ativos</option>
-      <option value="cancelados">Cancelados</option>
-      <option value="todos" >Todos</option>
+  <div class="flex flex-col md:flex-row gap-4 mb-6">
+    <input id="searchInput" type="text" placeholder="Buscar por nome ou WhatsApp..."
+      class="flex-1 border rounded-xl px-4 py-2 shadow-sm focus:ring-2 focus:ring-blue-400">
+    <select id="filtroStatus" class="border rounded-xl px-4 py-2 shadow-sm focus:ring-2 focus:ring-blue-400">
+      <option value="todos">Todos</option>
+      <option value="pendente">Pendentes</option>
+      <option value="confirmado">Confirmados</option>
+      <option value="cancelado">Cancelados</option>
     </select>
   </div>
 
   <!-- CARDS -->
-  <div id="cards" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+  <div id="cards" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
-  getFirestore, 
-  collection, 
-  onSnapshot, 
-  updateDoc, 
-  doc, 
-  getDoc,
-  addDoc 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, updateDoc, doc, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-import { 
-  getAuth, 
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
+// --- Config Firebase ---
 const firebaseConfig = {
   apiKey: "AIzaSyCWJZiUilkri_oCN4rLvmqFV5H_GhvEd6E",
   authDomain: "fisioterapia-agendamento.firebaseapp.com",
@@ -114,182 +126,203 @@ const auth = getAuth(app);
 const loginModal = document.getElementById("loginModal");
 const topArea = document.getElementById("topArea");
 const cards = document.getElementById("cards");
+const formAdmin = document.getElementById("formAdmin");
+const funcSelectAdmin = document.getElementById("funcAdmin");
 
 let agendamentos = [];
+let funcionarios = [];
 let unsubscribeAgendamentos = null;
 
-/* LOGIN */
+// -------------------- LOGIN --------------------
 window.login = async function() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
-
   try {
     await signInWithEmailAndPassword(auth, email, password);
   } catch {
     document.getElementById("loginError").innerText = "Email ou senha inválidos";
   }
-};
+}
 
-/* LOGOUT */
 window.logout = async function() {
   await signOut(auth);
-};
+}
 
-/* AUTH + ADMIN */
+// -------------------- TOGGLE FORM ADMIN --------------------
+window.toggleForm = function() {
+  formAdmin.classList.toggle("hidden");
+}
+
+// -------------------- AUTH + ADMIN --------------------
 onAuthStateChanged(auth, async (user) => {
-
-  // 🔴 Se NÃO estiver logado
   if (!user) {
-
-    console.log("Usuário não logado");
-
-    // Cancela listener se existir
-    if (unsubscribeAgendamentos) {
-      unsubscribeAgendamentos();
-      unsubscribeAgendamentos = null;
-    }
-
+    if (unsubscribeAgendamentos) unsubscribeAgendamentos();
     loginModal.classList.remove("hidden");
     topArea.classList.add("hidden");
     return;
   }
 
-  // ✅ Aqui o usuário EXISTE
-  console.log("UID LOGADO:", user.uid);
-
-  // 🔎 Verifica se é admin
-  const adminRef = doc(db, "admins", user.uid);
-  const adminDoc = await getDoc(adminRef);
-
-  if (!adminDoc.exists()) {
-    alert("Você não tem permissão de administrador.");
-    await signOut(auth);
-    return;
-  }
+  const adminSnap = await getDocs(collection(db,"admins"));
+  if (!adminSnap.docs.find(d=>d.id===user.uid)) { alert("Você não tem permissão."); await signOut(auth); return; }
 
   loginModal.classList.add("hidden");
   topArea.classList.remove("hidden");
 
-  // 🔁 Evita múltiplos listeners
-  if (unsubscribeAgendamentos) {
-    unsubscribeAgendamentos();
-  }
+  // Carrega funcionarios
+  const snap = await getDocs(collection(db,"funcionarios"));
+  funcionarios = snap.docs.map(d=>d.data().nome);
+  funcSelectAdmin.innerHTML = `<option value="">Selecione Funcionário</option>` + funcionarios.map(f=>`<option value="${f}">${f}</option>`).join('');
 
-  unsubscribeAgendamentos = onSnapshot(
-    collection(db, "agendamentos"),
-    (snapshot) => {
-      agendamentos = [];
-      snapshot.forEach(docItem => {
-        agendamentos.push({ id: docItem.id, ...docItem.data() });
-      });
-      render();
-      atualizarEstatisticas();
-    }
-  );
+  // Listener agendamentos
+  if (unsubscribeAgendamentos) unsubscribeAgendamentos();
+  unsubscribeAgendamentos = onSnapshot(collection(db,"agendamentos"), snapshot=>{
+    agendamentos = snapshot.docs.map(d=>({id:d.id, ...d.data()}));
+    renderCards();
+    atualizarEstatisticas();
+  });
 });
 
-/* RENDER */
-function render() {
-  cards.innerHTML = "";
-
+// -------------------- RENDER CARDS --------------------
+function renderCards() {
   const busca = document.getElementById("searchInput").value.toLowerCase();
   const filtro = document.getElementById("filtroStatus").value;
 
   let lista = [...agendamentos];
+  lista = lista.filter(a => (a.nomeCompleto?.toLowerCase().includes(busca) || a.whatsapp?.includes(busca)));
+  if(filtro!=='todos') lista = lista.filter(a=>a.status===filtro);
 
-  lista = lista.filter(ag =>
-  ag.nomeCompleto?.toLowerCase().includes(busca) ||
-  (ag.whatsapp && ag.whatsapp.includes(busca))
-  );
-
-  lista.sort((a, b) => {
-    const dataA = new Date(`${a.data}T${a.horario}`);
-    const dataB = new Date(`${b.data}T${b.horario}`);
-    return dataA - dataB;
+  lista.sort((a,b)=>{
+    if(!a.data) return -1;
+    if(!b.data) return 1;
+    return new Date(a.data+'T'+a.horario) - new Date(b.data+'T'+b.horario);
   });
 
-  if (filtro === "ativos") {
-    lista = lista.filter(a => a.status !== "cancelado");
-  } else if (filtro === "cancelados") {
-    lista = lista.filter(a => a.status === "cancelado");
-  }
-
-  lista.forEach(ag => {
-    const isCancelado = ag.status === "cancelado";
+  cards.innerHTML = '';
+  lista.forEach(a=>{
+    const statusColor = a.status==='cancelado'?'bg-red-100 text-red-700':
+                        a.status==='confirmado'?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700';
 
     cards.innerHTML += `
-      <div class="bg-white p-6 rounded-3xl shadow hover:shadow-xl transition ${isCancelado ? 'opacity-70' : ''}">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="font-bold text-lg">${ag.nomeCompleto}</h3>
-          <span class="px-3 py-1 text-xs rounded-full font-semibold ${
-            isCancelado ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
-          }">
-            ${isCancelado ? 'Cancelado' : 'Ativo'}
+      <div class="bg-white p-6 rounded-3xl shadow hover:shadow-xl transition fade-in">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="font-bold text-lg">${a.nomeCompleto}</h3>
+          <span class="px-3 py-1 text-xs rounded-full font-semibold ${statusColor}">
+            ${a.status==='pendente'?'Aguardando': a.status==='confirmado'?'Confirmado':'Cancelado'}
           </span>
         </div>
+        <p class="text-gray-600 mb-1"><i class="fab fa-whatsapp text-green-500"></i> ${a.whatsapp}</p>
+        <p class="text-gray-600 mb-3"><i class="fas fa-spa text-purple-500"></i> ${a.servico}</p>
 
-        <p class="text-gray-600">${ag.servico}</p>
-        <p class="text-gray-500 text-sm">${ag.data} às ${ag.horario}</p>
-        <p class="text-gray-400 text-sm mb-3">${ag.whatsapp || ""}</p>
-
-        ${
-          isCancelado
-          ? `<button onclick="restaurar('${ag.id}')"
-              class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-xl">
-              Restaurar
-            </button>`
-          : `<button onclick="cancelar('${ag.id}')"
-              class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-xl">
-              Cancelar
-            </button>`
-        }
+        ${!a.data ? `
+        <div class="flex flex-col gap-2 mb-3">
+          <input type="date" id="data_${a.id}" class="border px-3 py-2 rounded-xl focus:ring-2 focus:ring-blue-400">
+          <input type="time" id="hora_${a.id}" class="border px-3 py-2 rounded-xl focus:ring-2 focus:ring-blue-400">
+          <select id="func_${a.id}" class="border px-3 py-2 rounded-xl focus:ring-2 focus:ring-blue-400">
+            <option value="">Selecione funcionário</option>
+            ${funcionarios.map(f=>`<option value="${f}">${f}</option>`).join('')}
+          </select>
+          <div class="flex gap-2">
+            <button onclick="salvarAgendamento('${a.id}')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl flex-1 transition flex justify-center items-center gap-2">
+              <i class="fas fa-check"></i> Salvar
+            </button>
+            <button onclick="cancelarAgendamento('${a.id}')" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl flex-1 transition flex justify-center items-center gap-2">
+              <i class="fas fa-times"></i> Cancelar
+            </button>
+          </div>
+        </div>` : `
+        <p class="text-gray-700 mb-2"><i class="fas fa-calendar-day text-blue-500"></i> ${a.data} | <i class="fas fa-clock text-blue-500"></i> ${a.horario} | <i class="fas fa-user text-purple-500"></i> ${a.funcionario}</p>
+        <div class="flex gap-2">
+          <button onclick="restaurarAgendamento('${a.id}')" class="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-xl flex-1 transition flex justify-center items-center gap-2">
+            <i class="fas fa-undo"></i> Restaurar
+          </button>
+          <button onclick="cancelarAgendamento('${a.id}')" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl flex-1 transition flex justify-center items-center gap-2">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
+        </div>`}
       </div>
     `;
   });
 }
 
-/* ESTATÍSTICAS */
+// -------------------- FUNÇÕES --------------------
+async function salvarAgendamento(id) {
+  const data = document.getElementById(`data_${id}`).value;
+  const hora = document.getElementById(`hora_${id}`).value;
+  const funcionario = document.getElementById(`func_${id}`).value;
+
+  if(!data || !hora || !funcionario) { alert("Preencha todos os campos!"); return; }
+
+  await updateDoc(doc(db,"agendamentos",id),{data, horario:hora, funcionario, status:'confirmado'});
+  await addDoc(collection(db,"logs"),{admin:auth.currentUser.email, acao:"Agendamento confirmado", agendamentoId:id, data:new Date().toISOString()});
+}
+
+async function cancelarAgendamento(id) {
+  await updateDoc(doc(db,"agendamentos",id),{status:'cancelado'});
+  await addDoc(collection(db,"logs"),{admin:auth.currentUser.email, acao:"Agendamento cancelado", agendamentoId:id, data:new Date().toISOString()});
+}
+
+async function restaurarAgendamento(id) {
+  await updateDoc(doc(db,"agendamentos",id),{status:'pendente', data:null, horario:null, funcionario:null});
+  await addDoc(collection(db,"logs"),{admin:auth.currentUser.email, acao:"Agendamento restaurado", agendamentoId:id, data:new Date().toISOString()});
+}
+
+// -------------------- CRIAR AGENDAMENTO ADMIN --------------------
+window.criarAgendamento = async function() {
+  const nome = document.getElementById("nomeAdmin").value;
+  const whatsapp = document.getElementById("whatsappAdmin").value;
+  const servico = document.getElementById("servicoAdmin").value;
+  const data = document.getElementById("dataAdmin").value;
+  const hora = document.getElementById("horaAdmin").value;
+  const funcionario = document.getElementById("funcAdmin").value;
+
+  if(!nome || !whatsapp || !servico || !data || !hora || !funcionario) {
+    alert("Preencha todos os campos!");
+    return;
+  }
+
+  await addDoc(collection(db,"agendamentos"),{
+    nomeCompleto: nome,
+    whatsapp,
+    servico,
+    data,
+    horario: hora,
+    funcionario,
+    status: "confirmado"
+  });
+
+  await addDoc(collection(db,"logs"),{
+    admin: auth.currentUser.email,
+    acao: "Agendamento criado pelo admin",
+    data: new Date().toISOString()
+  });
+
+  // Limpa campos
+  document.getElementById("nomeAdmin").value="";
+  document.getElementById("whatsappAdmin").value="";
+  document.getElementById("servicoAdmin").value="";
+  document.getElementById("dataAdmin").value="";
+  document.getElementById("horaAdmin").value="";
+  document.getElementById("funcAdmin").value="";
+  formAdmin.classList.add("hidden");
+}
+
+// -------------------- ESTATÍSTICAS --------------------
 function atualizarEstatisticas() {
   const total = agendamentos.length;
-  const cancelados = agendamentos.filter(a => a.status === "cancelado").length;
-  const ativos = total - cancelados;
+  const pendentes = agendamentos.filter(a=>a.status==='pendente').length;
+  const confirmados = agendamentos.filter(a=>a.status==='confirmado').length;
+  const cancelados = agendamentos.filter(a=>a.status==='cancelado').length;
 
   document.getElementById("totalCount").innerText = total;
-  document.getElementById("ativosCount").innerText = ativos;
+  document.getElementById("pendentesCount").innerText = pendentes;
+  document.getElementById("confirmadosCount").innerText = confirmados;
   document.getElementById("canceladosCount").innerText = cancelados;
 }
 
-/* CANCELAR */
-window.cancelar = async function(id) {
-  await updateDoc(doc(db, "agendamentos", id), { status: "cancelado" });
-  await addLog("Cancelou", id);
-};
-
-/* RESTAURAR */
-window.restaurar = async function(id) {
-  await updateDoc(doc(db, "agendamentos", id), { status: "ativo" });
-  await addLog("Restaurou", id);
-};
-
-/* LOG */
-async function addLog(acao, agendamentoId) {
-  const user = auth.currentUser;
-  if (!user) return;
-
-  await addDoc(collection(db, "logs"), {
-    admin: user.email,
-    acao,
-    agendamentoId,
-    data: new Date().toISOString()
-  });
-}
-
-document.getElementById("searchInput").addEventListener("input", render);
-document.getElementById("filtroStatus").addEventListener("change", render);
-
-
-
-
+// -------------------- EVENT LISTENERS --------------------
+document.getElementById("searchInput").addEventListener("input", renderCards);
+document.getElementById("filtroStatus").addEventListener("change", renderCards);
+window.salvarAgendamento = salvarAgendamento;
+window.cancelarAgendamento = cancelarAgendamento;
+window.restaurarAgendamento = restaurarAgendamento;
 </script>
-</body>
-</html>

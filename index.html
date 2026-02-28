@@ -19,114 +19,28 @@
 
   <title>Fisiomasso</title>
 
-
   <style>
-    .agendamento {
-  display: flex;
-  justify-content: center;
-  padding: 80px 20px;
-  background: #f8f9fa;
-}
-
-.agendamento-box {
-  background: white;
-  padding: 40px;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 500px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-}
-
-.agendamento h2 {
-  text-align: center;
-  margin-bottom: 30px;
-  font-weight: 500;
-}
-
-.input-group {
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.input-group input {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  outline: none;
-}
-
-select, input[type="date"] {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-#horariosContainer {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.horario-btn {
-  padding: 12px;
-  border-radius: 16px;
-  border: 1px solid #E2E8F0;
-  background: white;
-  font-weight: 500;
-  transition: 0.3s ease;
-}
-
-.horario-btn:hover {
-  border-color: #0092B8;
-  color: #0092B8;
-}
-
-.horario-btn.selected {
-  background: #0092B8;
-  color: white;
-  border-color: #0092B8;
-}
-
-.horario-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-button {
-  padding: 14px;
-  background: #111;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-
-
-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: none;
-}
+    .agendamento { display: flex; justify-content: center; padding: 80px 20px; background: #f8f9fa; }
+    .agendamento-box { background: white; padding: 40px; border-radius: 16px; width: 100%; max-width: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
+    .agendamento h2 { text-align: center; margin-bottom: 30px; font-weight: 500; }
+    .input-group { position: relative; margin-bottom: 20px; }
+    .input-group input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+    select, input[type="date"] { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; }
+    #horariosContainer { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+    .horario-btn { padding: 12px; border-radius: 16px; border: 1px solid #E2E8F0; background: white; font-weight: 500; transition: 0.3s ease; }
+    .horario-btn:hover { border-color: #0092B8; color: #0092B8; }
+    .horario-btn.selected { background: #0092B8; color: white; border-color: #0092B8; }
+    .horario-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    button { padding: 14px; background: #111; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    select { appearance: none; -webkit-appearance: none; -moz-appearance: none; background-image: none; }
   </style>
 
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: {
-            inter: ['Inter', 'sans-serif'],
-          },
-          colors: {
-            primary: '#0092B8',
-            primaryHover: '#00A3CF',
-            secondary: '#005F78',
-          }
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: { primary: '#0092B8', primaryHover: '#00A3CF', secondary: '#005F78' }
         }
       }
     }
@@ -142,13 +56,11 @@ select {
 <header class="fixed top-0 z-10 bg-white w-full flex justify-center">
   <nav class="w-full max-w-[1120px] flex items-center justify-between h-16 my-4 px-4">
     <img src="assets/Logofisiomasso.png" alt="Logo" class="w-[166px] h-[56px]">
-
     <ul class="hidden md:flex gap-12 text-[#45556C]">
       <li><a href="#">Início</a></li>
       <li><a href="#servicos">Serviços</a></li>
       <li><a href="#sobre">Sobre</a></li>
     </ul>
-
     <a href="https://api.whatsapp.com/send?phone=5517981414835" 
       class="bg-primary hover:bg-primaryHover text-white px-6 py-2 rounded-full text-sm">
       Falar agora
@@ -158,34 +70,31 @@ select {
 
 <main class="w-full flex flex-col items-center mt-[110px]">
 
+<!-- HERO -->
 <section class="w-full max-w-[1120px] flex flex-col md:flex-row px-4 mb-14 md:gap-[73px]">
   <div class="flex flex-col max-w-[626px]">
     <div class="bg-[#CEFAFE] px-4 py-2 rounded-lg w-fit flex items-center gap-2 my-[24px]">
       <i class="ph ph-star text-primary"></i>
       <span class="text-primary font-semibold">5.0 em avaliações</span>
     </div>
-
     <h1 class="text-3xl md:text-5xl md:leading-[56px]">
       Fisioterapia especializada para saúde, movimento e qualidade de vida
     </h1>
-
     <p class="text-[#62748E] text-lg mt-5 max-w-[547px]">
       Cuidamos do seu corpo unindo prevenção, reabilitação e preparação física.
     </p>
-
     <a href="https://api.whatsapp.com/send?phone=5517981414835">
       <button class="bg-primary hover:bg-primaryHover text-white px-8 py-4 rounded-full mt-8">
         FALAR AGORA
       </button>
     </a>
   </div>
-
   <img src="assets/IMGhero.png" class="w-full my-[24px] md:flex md:w-auto"/>
 </section>
 
+<!-- BENEFÍCIOS -->
 <section class="w-full bg-[#E2E8F0] py-14">
   <div class="max-w-[1120px] mx-auto flex flex-col md:flex-row gap-14 px-4">
-    
     <div class="flex flex-col items-center text-center max-w-[344px] mx-auto">
       <div class="p-4 bg-white rounded-full border border-primary shadow-lg shadow-primary/30 max-h-[64px] w-[64px]">
         <i class="ph ph-certificate text-2xl text-primary"></i>
@@ -193,7 +102,6 @@ select {
       <h3 class="mt-4 text-xl font-semibold">Profissionais certificados</h3>
       <p class="mt-2 text-[#62748E] font-semibold max-w-[300px]">Contamos com um time de especialistas na área</p>
     </div>
-
     <div class="flex flex-col items-center text-center max-w-[344px] mx-auto">
       <div class="p-4 bg-white rounded-full border border-primary shadow-lg shadow-primary/30 max-h-[64px] w-[64px]">
         <i class="ph ph-user-circle text-2xl text-primary"></i>
@@ -201,7 +109,6 @@ select {
       <h3 class="mt-4 text-xl font-semibold">Serviços personalizados</h3>
       <p class="mt-2 text-[#62748E] font-semibold max-w-[276px]">Fazemos a Fisioterapia acontecer do seu jeito</p>
     </div>
-
     <div class="flex flex-col items-center text-center max-w-[344px] mx-auto">
       <div class="p-4 bg-white rounded-full border border-primary shadow-lg shadow-primary/30 max-h-[64px] w-[64px]">
         <i class="ph ph-house-line text-2xl text-primary"></i>
@@ -209,13 +116,11 @@ select {
       <h3 class="mt-4 text-xl font-semibold">Espaço acolhedor</h3>
       <p class="mt-2 text-[#62748E] font-semibold max-w-[294px]">Temos um ambiente agradável para cuidar de você</p>
     </div>
-
   </div>
 </section>
 
 <!-- SERVIÇOS -->
 <section id="servicos" class="w-full bg-secondary py-14 flex flex-col items-center gap-14">
-
   <div class="w-[90%] max-w-[1120px] h-[420px] md:h-[670px] rounded-2xl border border-[#A2F4FD] bg-cover bg-center flex items-end p-6 md:p-14"
     style="background-image:url('assets/IMGreabilitacao.png')">
     <div class="text-white max-w-[490px]">
@@ -223,7 +128,6 @@ select {
       <p>Trabalhamos para reduzir dores, evitar complicações, recuperar movimentos e devolver autonomia.</p>
     </div>
   </div>
-
   <div class="w-[90%] max-w-[1120px] h-[420px] md:h-[670px] rounded-2xl border border-[#A2F4FD] bg-cover bg-center flex items-end p-6 md:p-14"
     style="background-image:url('assets/IMGfortalecimento.png')">
     <div class="text-white max-w-[490px]">
@@ -231,7 +135,6 @@ select {
       <p>Melhora a estabilidade, resistência e controle, para prevenção de lesões e reabilitação funcional.</p>
     </div>
   </div>
-
   <div class="w-[90%] max-w-[1120px] h-[420px] md:h-[670px] rounded-2xl border border-[#A2F4FD] bg-cover bg-center flex items-end p-6 md:p-14"
     style="background-image:url('assets/IMGliberacao.png')">
     <div class="text-white max-w-[490px]">
@@ -239,14 +142,11 @@ select {
       <p>Ideal para recuperação muscular, prevenção de lesões e melhora do desempenho físico.</p>
     </div>
   </div>
-
 </section>
 
-
-
-   <section class="w-full py-24 bg-[#F7FBFD] flex justify-center">
+<!-- AGENDAMENTO -->
+<section class="w-full py-24 bg-[#F7FBFD] flex justify-center">
   <div class="w-full max-w-[640px] bg-white rounded-[32px] shadow p-12 border">
-
     <div class="text-center mb-12">
       <span class="text-primary text-sm font-semibold uppercase">
         SOLICITAR ATENDIMENTO
@@ -259,25 +159,21 @@ select {
       </p>
     </div>
 
-    <form id="formAgendamento" class="space-y-6">
-
+    <form id="formAgendamento" class="space-y-6" novalidate>
+      <input type="text" name="website" style="display:none" autocomplete="off">
       <div>
-        <label class="text-sm text-[#62748E]">Nome Completo</label>
+        <label for="nomeCompleto" class="text-sm text-[#62748E]">Nome Completo</label>
         <input type="text" id="nomeCompleto" required minlength="5" maxlength="80"
           class="w-full mt-2 px-4 py-3 border rounded-2xl">
       </div>
-
       <div>
-        <label class="text-sm text-[#62748E]">WhatsApp</label>
-        <input type="text" id="whatsapp" required pattern="[0-9]{10,11}"
-          class="w-full mt-2 px-4 py-3 border rounded-2xl"
-          placeholder="Somente números">
+        <label for="whatsapp" class="text-sm text-[#62748E]">WhatsApp</label>
+        <input type="text" id="whatsapp" required
+          class="w-full mt-2 px-4 py-3 border rounded-2xl" placeholder="Somente números">
       </div>
-
       <div>
-        <label class="text-sm text-[#62748E]">Serviço</label>
-        <select id="servico" required
-          class="w-full mt-2 px-4 py-3 border rounded-2xl">
+        <label for="servico" class="text-sm text-[#62748E]">Serviço</label>
+        <select id="servico" required class="w-full mt-2 px-4 py-3 border rounded-2xl">
           <option value="" disabled selected>Selecione</option>
           <option>Avaliação Pré-Operatório</option>
           <option>Avaliação Pós-Operatório</option>
@@ -287,9 +183,7 @@ select {
           <option>Outros</option>
         </select>
       </div>
-
-      <button type="submit"
-        class="w-full py-4 bg-primary text-white rounded-2xl">
+      <button type="submit" class="w-full py-4 bg-primary text-white rounded-2xl">
         Solicitar Atendimento
       </button>
     </form>
@@ -298,65 +192,85 @@ select {
   </div>
 </section>
 
-
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCWJZiUilkri_oCN4rLvmqFV5H_GhvEd6E",
-  authDomain: "fisioterapia-agendamento.firebaseapp.com",
-  projectId: "fisioterapia-agendamento",
-  storageBucket: "fisioterapia-agendamento.firebasestorage.app",
-  messagingSenderId: "928899499645",
-  appId: "1:928899499645:web:e86a365a71c85f845c1314"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyCWJZiUilkri_oCN4rLvmqFV5H_GhvEd6E",
+    authDomain: "fisioterapia-agendamento.firebaseapp.com",
+    projectId: "fisioterapia-agendamento",
+    storageBucket: "fisioterapia-agendamento.appspot.com",
+    messagingSenderId: "928899499645",
+    appId: "1:928899499645:web:e86a365a71c85f845c1314"
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+  const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-const form = document.getElementById("formAgendamento");
-const mensagem = document.getElementById("mensagem");
+  const form = document.getElementById("formAgendamento");
+  const mensagem = document.getElementById("mensagem");
+  const HONEYPOT_NAME = 'website';
+  const INTERVAL_MINUTES = 10;
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    mensagem.textContent = '';
+    mensagem.className = 'text-center mt-6 text-sm font-medium';
+    if (form[HONEYPOT_NAME].value) return;
 
-  const nomeCompleto = document.getElementById("nomeCompleto").value.trim();
-  const whatsapp = document.getElementById("whatsapp").value.trim();
-  const servico = document.getElementById("servico").value;
+    const nome = form.nomeCompleto.value.trim();
+    const whatsapp = form.whatsapp.value.trim();
+    const servico = form.servico.value;
+    if (nome.length < 5 || nome.length > 80) return showError('Nome deve ter entre 5 e 80 caracteres.');
+    if (!/^\d{10,11}$/.test(whatsapp)) return showError('WhatsApp deve conter 10 ou 11 números.');
+    if (!servico) return showError('Selecione um serviço.');
 
-  await addDoc(collection(db, "agendamentos"), {
-    nomeCompleto,
-    whatsapp,
-    servico,
-    status: "pendente",
-    data: null,
-    horario: null,
-    funcionario: null,
-    criadoEm: new Date()
+    const lastSubmit = localStorage.getItem('ultimoAgendamento');
+    const now = Date.now();
+    if (lastSubmit && now - lastSubmit < INTERVAL_MINUTES * 60000) {
+      const mins = Math.ceil((INTERVAL_MINUTES * 60000 - (now - lastSubmit)) / 60000);
+      return showError(`Aguarde ${mins} minuto(s) antes de enviar outro agendamento.`);
+    }
+
+    try {
+      await addDoc(collection(db, "agendamentos"), {
+        nomeCompleto: nome,
+        whatsapp,
+        servico,
+        status: "pendente",
+        data: null,
+        horario: null,
+        funcionario: null,
+        criadoEm: new Date()
+      });
+      localStorage.setItem('ultimoAgendamento', now);
+      form.reset();
+      showSuccess('Agendamento solicitado com sucesso!');
+    } catch (err) {
+      console.error(err);
+      showError('Erro ao enviar. Tente novamente.');
+    }
   });
 
-  mensagem.innerText = "Solicitação enviada! Entraremos em contato.";
-  mensagem.style.color = "green";
-  form.reset();
-});
-</script>
+  function showError(msg) {
+    mensagem.textContent = msg;
+    mensagem.className = 'text-center mt-6 text-sm font-medium text-red-600';
+  }
 
-</section>
+  function showSuccess(msg) {
+    mensagem.textContent = msg;
+    mensagem.className = 'text-center mt-6 text-sm font-medium text-green-600';
+  }
+</script>
 
 <!-- SOBRE -->
 <section id="sobre" class="py-14 text-center max-w-[744px] w-[90%]">
-  <span class="bg-[#CEFAFE] text-primary font-semibold px-4 py-2 rounded-lg">
-    Sobre nós
-  </span>
-
+  <span class="bg-[#CEFAFE] text-primary font-semibold px-4 py-2 rounded-lg">Sobre nós</span>
   <h2 class="text-4xl md:text-5xl mt-6">Conheça a Fisiomasso</h2>
-
   <p class="mt-5 text-[#62748E] md:text-[18px] font-medium">
-   Há mais de 4 anos, acreditamos que movimento é qualidade de vida. Nosso trabalho é focado no cuidado individualizado, unindo fisioterapia, massoterapia e preparação física para promover saúde, prevenção e reabilitação de forma completa e eficaz
+    Há mais de 4 anos, acreditamos que movimento é qualidade de vida. Nosso trabalho é focado no cuidado individualizado, unindo fisioterapia, massoterapia e preparação física para promover saúde, prevenção e reabilitação de forma completa e eficaz
   </p>
-
   <a href="https://api.whatsapp.com/send?phone=5517981414835">
       <button class="bg-primary hover:bg-primaryHover text-white px-8 py-4 rounded-full mt-8">
         FALAR AGORA
@@ -366,7 +280,7 @@ form.addEventListener("submit", async (e) => {
 
 <!-- FOOTER -->
 <footer class="py-10 text-center text-xs text-[#90A1B9]">
-  <p> © Fissiomasso, 2026. Todos os direitos reservados.</p>
+  <p> © Fissiomasso, 2026. Todos os direitos reservados.</p>
   <p>R. São João, 29 - Patrimonio de São João Batista, Olímpia - SP, 15400-065</p>
 </footer>
 

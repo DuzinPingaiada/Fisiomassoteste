@@ -3,57 +3,147 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fisiomasso - Funcionários</title>
+<title>Área do Funcionário</title>
+
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
 <style>
-body { background: #f0f4f8; font-family: 'Inter', sans-serif; }
-h1 { color: #1e293b; }
-.card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 12px 25px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; }
-.card:hover { transform: translateY(-5px); box-shadow: 0 18px 35px rgba(0,0,0,0.15); }
-.filter-container { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
-.filter-container select, .filter-container input { flex:1; padding:12px; border-radius:12px; border: 1px solid #cbd5e1; transition: all 0.3s; }
-.filter-container select:focus, .filter-container input:focus { outline:none; border-color:#3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
-.navbar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
-.navbar button { flex: 1; padding: 14px; font-weight: 600; border-radius: 12px; border: none; transition: 0.3s; background: linear-gradient(135deg,#0ea5e9,#3b82f6); color: white; }
-.navbar button:hover { background: linear-gradient(135deg,#3b82f6,#0ea5e9); transform: scale(1.05); }
-.status-pendente { background: linear-gradient(90deg,#fde68a,#fcd34d); color:#92400e; }
-.status-confirmado { background: linear-gradient(90deg,#bbf7d0,#22c55e); color:#166534; }
-.status-cancelado { background: linear-gradient(90deg,#fecaca,#ef4444); color:#991b1b; }
-.tooltip { position: relative; display: inline-block; cursor: pointer; }
-.tooltip .tooltiptext { visibility: hidden; width: max-content; background-color: #1e293b; color: #fff; text-align: center; border-radius: 6px; padding: 6px 10px; position: absolute; z-index: 10; bottom: 125%; left: 50%; transform: translateX(-50%); opacity:0; transition: opacity 0.3s; font-size:0.875rem; }
-.tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
-.fade-in { animation: fadeIn 0.5s ease forwards; opacity: 0; }
-@keyframes fadeIn { to { opacity: 1; } }
+body {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(59,130,246,0.15), transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(16,185,129,0.12), transparent 40%),
+    linear-gradient(to bottom right, #0f172a, #020617);
+  background-attachment: fixed;
+}
+
+/* Glow suave */
+body::before {
+  content: "";
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(99,102,241,0.15), transparent 70%);
+  top: -200px;
+  right: -200px;
+  filter: blur(120px);
+  z-index: 0;
+}
+
+/* Scroll refinado */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #334155, #1e293b);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* Transições globais */
+button, select, input, div {
+  transition: all .25s ease;
+}
 </style>
 </head>
-<body class="p-6 md:p-12">
 
-<h1 class="text-4xl font-bold mb-8">Fisiomasso - Painel Funcionários</h1>
+<body class="relative min-h-screen text-slate-100 p-5 md:p-10">
 
-<!-- Dashboard de status -->
-<div class="grid md:grid-cols-3 gap-6 mb-8">
-  <div class="card text-center"><h2 class="text-gray-500">Total</h2><p id="total" class="text-3xl font-bold">0</p></div>
-  <div class="card text-center"><h2 class="text-gray-500">Pendentes</h2><p id="pendentes" class="text-3xl font-bold text-yellow-500">0</p></div>
-  <div class="card text-center"><h2 class="text-gray-500">Confirmados</h2><p id="confirmados" class="text-3xl font-bold text-green-600">0</p></div>
+<!-- LOGIN -->
+<div id="loginArea" class="flex items-center justify-center h-screen relative z-10">
+  <div class="backdrop-blur-2xl bg-white/5 p-12 rounded-[32px] shadow-[0_20px_80px_rgba(0,0,0,0.7)] w-full max-w-md border border-white/10">
+
+    <h2 class="text-3xl font-bold mb-10 text-center tracking-wide">
+      🔐 Área do Funcionário
+    </h2>
+
+    <label for="email" class="sr-only">Email</label>
+    <input 
+      id="email"
+      name="email"
+      type="email"
+      placeholder="Email"
+      autocomplete="email"
+      class="w-full mb-5 p-4 rounded-2xl bg-slate-100 text-black focus:ring-2 focus:ring-indigo-500 outline-none">
+
+    <label for="password" class="sr-only">Senha</label>
+    <input 
+      id="password"
+      name="password"
+      type="password"
+      placeholder="Senha"
+      autocomplete="current-password"
+      class="w-full mb-8 p-4 rounded-2xl bg-slate-100 text-black focus:ring-2 focus:ring-indigo-500 outline-none">
+
+    <button onclick="login()"
+      class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:scale-[1.02] active:scale-[0.98] p-4 rounded-2xl font-semibold shadow-xl">
+      Entrar
+    </button>
+
+    <p id="loginError" class="text-red-400 mt-6 text-center"></p>
+  </div>
 </div>
 
-<!-- Filtros premium -->
-<div class="filter-container">
-  <select id="funcionarioSelect" class="shadow-lg"></select>
-  <input type="date" id="dataFiltro" class="shadow-lg">
+<!-- AGENDA -->
+<div id="agendaArea" class="hidden max-w-7xl mx-auto relative z-10">
+
+  <!-- HEADER -->
+  <div class="flex flex-col md:flex-row justify-between md:items-center gap-6 mb-14">
+    <h1 class="text-4xl md:text-5xl font-bold tracking-tight">
+      📅 Agenda Fisisiomasso
+    </h1>
+
+    <button onclick="logout()"
+      class="bg-gradient-to-r from-red-600 to-red-800 hover:scale-[1.05] active:scale-[0.95] px-7 py-3 rounded-2xl shadow-xl font-semibold">
+      Sair
+    </button>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="backdrop-blur-2xl bg-white/5 p-10 rounded-[32px] shadow-[0_20px_80px_rgba(0,0,0,0.6)] mb-14 grid md:grid-cols-2 gap-10 border border-white/10">
+
+    <div>
+      <label for="funcionario" class="sr-only">Funcionário</label>
+      <select 
+        id="funcionario"
+        name="funcionario"
+        autocomplete="off"
+        class="w-full p-4 rounded-2xl bg-slate-100 text-black focus:ring-2 focus:ring-indigo-500 outline-none">
+      </select>
+    </div>
+
+    <div>
+      <label for="data" class="sr-only">Data</label>
+      <input 
+        type="date"
+        id="data"
+        name="data"
+        autocomplete="off"
+        class="w-full p-4 rounded-2xl bg-slate-100 text-black focus:ring-2 focus:ring-indigo-500 outline-none">
+    </div>
+
+  </div>
+
+  <!-- AGENDA -->
+  <div id="agenda"></div>
+
 </div>
-
-<!-- Navbar premium de funcionários -->
-<div class="navbar" id="funcionariosNavbar"></div>
-
-<!-- Cards de agendamentos -->
-<div id="cardsContainer" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  onSnapshot,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCWJZiUilkri_oCN4rLvmqFV5H_GhvEd6E",
@@ -68,132 +158,169 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-let funcionarios = [];
+const loginArea = document.getElementById("loginArea");
+const agendaArea = document.getElementById("agendaArea");
+const funcionarioSelect = document.getElementById("funcionario");
+const dataInput = document.getElementById("data");
+const agendaDiv = document.getElementById("agenda");
+
 let agendamentos = [];
+let unsubscribe = null;
 
-const funcionarioSelect = document.getElementById("funcionarioSelect");
-const dataFiltro = document.getElementById("dataFiltro");
-const cardsContainer = document.getElementById("cardsContainer");
-const funcionariosNavbar = document.getElementById("funcionariosNavbar");
+dataInput.valueAsDate = new Date();
 
-function formatarData(dataStr) {
-  if (!dataStr) return "-";
-  const d = new Date(dataStr);
-  const day = String(d.getDate()).padStart(2,'0');
-  const month = String(d.getMonth()+1).padStart(2,'0');
-  const year = d.getFullYear();
-  return `${day}/${month}/${year}`;
+window.login = async function() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch {
+    document.getElementById("loginError").innerText = "Email ou senha inválidos";
+  }
+}
+
+window.logout = async function() {
+  await signOut(auth);
 }
 
 onAuthStateChanged(auth, async (user) => {
-  if(!user) { window.location.href="login.html"; return; }
 
-  // Verifica admin
+  if (!user) {
+    loginArea.classList.remove("hidden");
+    agendaArea.classList.add("hidden");
+    if (unsubscribe) unsubscribe();
+    return;
+  }
+
   const adminSnap = await getDocs(collection(db,"admins"));
-  if(!adminSnap.docs.find(d=>d.id===user.uid)) { alert("Você não tem permissão."); return; }
+  if(!adminSnap.docs.find(d=>d.id===user.uid)){
+    alert("Sem permissão.");
+    await signOut(auth);
+    return;
+  }
 
-  await carregarFuncionarios();
-  await carregarAgendamentos();
+  loginArea.classList.add("hidden");
+  agendaArea.classList.remove("hidden");
+
+  carregarFuncionarios();
+  carregarAgendamentos();
 });
 
 async function carregarFuncionarios() {
   const snap = await getDocs(collection(db,"funcionarios"));
-  funcionarios = snap.docs.map(d=>({id:d.id, nome:d.data().nome}));
+  funcionarioSelect.innerHTML = snap.docs.map(d =>
+    `<option value="${d.data().nome}">${d.data().nome}</option>`
+  ).join('');
+}
 
-  funcionarioSelect.innerHTML = '<option value="">Todos os funcionários</option>';
-  funcionarios.forEach(f=>{
-    funcionarioSelect.innerHTML += `<option value="${f.nome}">${f.nome}</option>`;
-  });
-
-  // Navbar
-  funcionariosNavbar.innerHTML = '';
-  funcionarios.forEach(f=>{
-    const btn = document.createElement('button');
-    btn.innerText = f.nome;
-    btn.onclick = ()=>{ funcionarioSelect.value=f.nome; renderCards(); };
-    funcionariosNavbar.appendChild(btn);
+function carregarAgendamentos(){
+  if(unsubscribe) unsubscribe();
+  unsubscribe = onSnapshot(collection(db,"agendamentos"), snap=>{
+    agendamentos = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderAgenda();
   });
 }
 
-dataFiltro.addEventListener('change', renderCards);
-funcionarioSelect.addEventListener('change', renderCards);
+function renderAgenda(){
 
-async function carregarAgendamentos() {
-  const snap = await getDocs(collection(db,"agendamentos"));
-  agendamentos = snap.docs.map(d=>({id:d.id, ...d.data()}));
-  renderCards();
-}
+  if (!dataInput.value || !funcionarioSelect.value) {
+    agendaDiv.innerHTML = "";
+    return;
+  }
 
-function renderCards() {
-  const filtroFuncionario = funcionarioSelect.value;
-  const filtroData = dataFiltro.value;
+  const funcionario = funcionarioSelect.value.trim().toLowerCase();
+  const data = dataInput.value;
 
-  let filtered = agendamentos.filter(a=>{
-    let ok = true;
-    if(filtroFuncionario) ok = ok && a.funcionario===filtroFuncionario;
-    if(filtroData) ok = ok && a.data===filtroData;
-    return ok;
+  const partes = data.split("-");
+  const ano = parseInt(partes[0]);
+  const mes = parseInt(partes[1]) - 1;
+  const dia = parseInt(partes[2]);
+
+  const dataLocal = new Date(ano, mes, dia);
+  const diaSemana = dataLocal.getDay();
+
+  let horarios;
+
+  if (diaSemana === 5) {
+    horarios = ["08:00","09:00","10:00","11:00","15:00","16:00","17:00","18:00"];
+  } else {
+    horarios = ["08:00","09:00","10:00","11:00","15:00","16:00","17:00","18:00","19:00"];
+  }
+
+  agendaDiv.innerHTML = `
+    <div class="backdrop-blur-2xl bg-white/5 rounded-[32px] shadow-[0_20px_80px_rgba(0,0,0,0.7)] overflow-hidden border border-white/10">
+      <div id="agendaGrid"></div>
+    </div>
+  `;
+
+  const grid = document.getElementById("agendaGrid");
+
+  horarios.forEach(horario=>{
+
+    const ag = agendamentos.find(a=>
+      a.funcionario?.trim().toLowerCase()===funcionario &&
+      a.data===data &&
+      a.horario===horario &&
+      a.status==="confirmado"
+    );
+
+    const row = document.createElement("div");
+    row.className = "grid grid-cols-1 md:grid-cols-[120px_1fr] border-t border-white/5 hover:bg-white/5";
+
+    const horaCol = document.createElement("div");
+    horaCol.className = "p-6 font-bold text-slate-400 md:text-center bg-black/20";
+    horaCol.innerText = horario;
+
+    const conteudo = document.createElement("div");
+    conteudo.className = "p-6";
+
+    if(ag){
+      conteudo.innerHTML = `
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 
+        bg-gradient-to-br from-rose-600 to-red-800 
+        p-8 rounded-[28px] shadow-[0_15px_50px_rgba(0,0,0,0.6)] 
+        hover:scale-[1.02]">
+
+          <div class="space-y-2">
+            <p class="font-bold text-2xl">${ag.nomeCompleto}</p>
+            <p class="text-red-200">${ag.servico}</p>
+            <a href="https://wa.me/55${ag.whatsapp}" 
+               target="_blank" 
+               class="underline text-sm break-all">
+              📱 ${ag.whatsapp}
+            </a>
+          </div>
+
+          <button onclick="concluir('${ag.id}')"
+            class="bg-black/30 hover:bg-black/50 px-6 py-3 rounded-2xl font-semibold">
+            Finalizado
+          </button>
+
+        </div>
+      `;
+    } else {
+      conteudo.innerHTML = `
+        <div class="bg-gradient-to-br from-emerald-500 to-green-700 
+        p-8 rounded-[28px] text-center font-semibold shadow-xl text-lg 
+        hover:scale-[1.02]">
+          Disponível
+        </div>
+      `;
+    }
+
+    row.appendChild(horaCol);
+    row.appendChild(conteudo);
+    grid.appendChild(row);
   });
-
-  // Ordena por data + horário crescente
-  filtered.sort((a,b)=>{
-    const dtA = new Date(`${a.data}T${a.horario || '00:00'}`);
-    const dtB = new Date(`${b.data}T${b.horario || '00:00'}`);
-    return dtA - dtB;
-  });
-
-  cardsContainer.innerHTML = '';
-  let total=0, pendentes=0, confirmados=0;
-
-  filtered.forEach(a=>{
-    total++;
-    if(a.status==='pendente') pendentes++;
-    if(a.status==='confirmado') confirmados++;
-
-    const statusClasses = a.status==='confirmado' ? 'status-confirmado' :
-                          a.status==='cancelado' ? 'status-cancelado' : 'status-pendente';
-
-    const card = document.createElement('div');
-    card.className = 'card fade-in';
-
-    card.innerHTML = `
-      <div class="flex justify-between items-center mb-3">
-        <h3 class="text-xl font-semibold text-gray-800">${a.nomeCompleto||"-"}</h3>
-        <span class="px-3 py-1 rounded-full font-semibold ${statusClasses}">
-          ${a.status==='confirmado'?'✅ Confirmado':a.status==='cancelado'?'❌ Cancelado':'🟡 Pendente'}
-        </span>
-      </div>
-      <div class="mb-2 text-gray-600"><i class="fas fa-calendar-day text-blue-500"></i> ${formatarData(a.data)} | <i class="fas fa-clock text-blue-500"></i> ${a.horario||"-"}</div>
-      <div class="flex flex-col gap-1">
-        <div class="tooltip"><i class="fab fa-whatsapp text-green-500"></i> ${a.whatsapp||"-"}<span class="tooltiptext">WhatsApp do cliente</span></div>
-        <div class="tooltip"><i class="fas fa-spa text-purple-500"></i> ${a.servico||"-"}<span class="tooltiptext">Serviço agendado</span></div>
-      </div>
-      <div class="flex gap-2 mt-4">
-        <button onclick="confirmar('${a.id}')" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl transition flex justify-center items-center gap-2">
-          <i class="fas fa-check"></i> Confirmar
-        </button>
-        <button onclick="cancelar('${a.id}')" class="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl transition flex justify-center items-center gap-2">
-          <i class="fas fa-times"></i> Cancelar
-        </button>
-      </div>
-    `;
-    cardsContainer.appendChild(card);
-  });
-
-  document.getElementById("total").innerText = total;
-  document.getElementById("pendentes").innerText = pendentes;
-  document.getElementById("confirmados").innerText = confirmados;
 }
 
-window.confirmar = async function(id) {
-  await updateDoc(doc(db,"agendamentos",id),{status:'confirmado'});
-  await carregarAgendamentos();
+window.concluir = async function(id){
+  await deleteDoc(doc(db,"agendamentos",id));
 }
 
-window.cancelar = async function(id) {
-  await updateDoc(doc(db,"agendamentos",id),{status:'cancelado'});
-  await carregarAgendamentos();
-}
+funcionarioSelect.addEventListener("change",renderAgenda);
+dataInput.addEventListener("change",renderAgenda);
+
 </script>
 </body>
 </html>

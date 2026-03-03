@@ -3,125 +3,96 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Área do Funcionário</title>
+<title>Área do Funcionário - Fisiomasso</title>
+
+<link rel="shortcut icon" href="assets/favicon.svg" type="image/x-icon">
 
 <script src="https://cdn.tailwindcss.com"></script>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
 <style>
-body {
+body{
+  font-family:'Inter',sans-serif;
   background:
-    radial-gradient(circle at 15% 20%, rgba(59,130,246,0.15), transparent 40%),
+    radial-gradient(circle at 15% 20%, rgba(99,102,241,0.15), transparent 40%),
     radial-gradient(circle at 85% 80%, rgba(16,185,129,0.12), transparent 40%),
-    linear-gradient(to bottom right, #0f172a, #020617);
+    linear-gradient(to bottom right,#0f172a,#020617);
   background-attachment: fixed;
+  color:white;
 }
 
-/* Glow suave */
-body::before {
-  content: "";
-  position: fixed;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(99,102,241,0.15), transparent 70%);
-  top: -200px;
-  right: -200px;
-  filter: blur(120px);
-  z-index: 0;
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(to bottom,#334155,#1e293b);
+  border-radius:10px;
 }
 
-/* Scroll refinado */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #334155, #1e293b);
-  border-radius: 10px;
+.glass{
+  backdrop-filter:blur(25px);
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 20px 80px rgba(0,0,0,0.6);
 }
-::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-/* Transições globais */
-button, select, input, div {
-  transition: all .25s ease;
+input, select{
+  background:#f1f5f9;
+  color:#000;
 }
 </style>
 </head>
 
-<body class="relative min-h-screen text-slate-100 p-5 md:p-10">
+<body class="p-6 md:p-12">
 
-<!-- LOGIN -->
-<div id="loginArea" class="flex items-center justify-center h-screen relative z-10">
-  <div class="backdrop-blur-2xl bg-white/5 p-12 rounded-[32px] shadow-[0_20px_80px_rgba(0,0,0,0.7)] w-full max-w-md border border-white/10">
+<div id="loginArea" class="fixed inset-0 bg-black/70 backdrop-blur-xl flex justify-center items-center z-50">
 
-    <h2 class="text-3xl font-bold mb-10 text-center tracking-wide">
-      🔐 Área do Funcionário
+  <div class="glass w-[400px] p-10 rounded-3xl">
+
+    <h2 class="text-3xl font-bold mb-6 text-center text-white">
+      Painel Funcionário
     </h2>
 
-    <label for="email" class="sr-only">Email</label>
-    <input 
-      id="email"
-      name="email"
-      type="email"
-      placeholder="Email"
-      autocomplete="email"
-      class="w-full mb-5 p-4 rounded-2xl bg-slate-100 text-black focus:ring-2 focus:ring-indigo-500 outline-none">
+    <input id="email" type="email" placeholder="Email"
+      class="w-full rounded-xl px-4 py-3 mb-4 text-black"
+      autocomplete="email">
 
-    <label for="password" class="sr-only">Senha</label>
-    <input 
-      id="password"
-      name="password"
-      type="password"
-      placeholder="Senha"
-      autocomplete="current-password"
-      class="w-full mb-8 p-4 rounded-2xl bg-slate-100 text-black focus:ring-2 focus:ring-indigo-500 outline-none">
+    <input id="password" type="password" placeholder="Senha"
+      class="w-full rounded-xl px-4 py-3 mb-5 text-black"
+      autocomplete="current-password">
 
-    <button onclick="login()"
-      class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:scale-[1.02] active:scale-[0.98] p-4 rounded-2xl font-semibold shadow-xl">
-      Entrar
+    <button id="loginBtn"
+      class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:scale-[1.03] text-white py-3 rounded-xl font-semibold flex justify-center items-center gap-2 transition">
+      <i class="fas fa-right-to-bracket"></i> Entrar
     </button>
 
-    <p id="loginError" class="text-red-400 mt-6 text-center"></p>
+    <p id="loginError" class="text-red-400 mt-4 text-sm text-center"></p>
+
   </div>
 </div>
 
-<!-- AGENDA -->
-<div id="agendaArea" class="hidden max-w-7xl mx-auto relative z-10">
+<div id="agendaArea" class="hidden max-w-7xl mx-auto pt-10">
 
-  <!-- HEADER -->
-  <div class="flex flex-col md:flex-row justify-between md:items-center gap-6 mb-14">
-    <h1 class="text-4xl md:text-5xl font-bold tracking-tight">
-      📅 Agenda Fisisiomasso
+  <div class="flex justify-between items-center mb-10 flex-wrap gap-4">
+    <h1 class="text-4xl font-bold flex items-center gap-3">
+      <i class="fas fa-calendar-days text-indigo-400"></i>
+      Agenda Funcionário
     </h1>
 
-    <button onclick="logout()"
-      class="bg-gradient-to-r from-red-600 to-red-800 hover:scale-[1.05] active:scale-[0.95] px-7 py-3 rounded-2xl shadow-xl font-semibold">
-      Sair
+    <button id="logoutBtn"
+      class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-xl shadow-lg transition flex items-center gap-2">
+      <i class="fas fa-arrow-right-from-bracket"></i> Sair
     </button>
   </div>
 
-  <!-- FILTROS -->
-  <div class="backdrop-blur-2xl bg-white/5 p-10 rounded-[32px] shadow-[0_20px_80px_rgba(0,0,0,0.6)] mb-14 grid md:grid-cols-2 gap-10 border border-white/10">
+  <div class="glass p-6 rounded-3xl mb-10 grid md:grid-cols-2 gap-6">
 
-    <div>
-      <label for="funcionario" class="sr-only">Funcionário</label>
-      <select 
-        id="funcionario"
-        name="funcionario"
-        autocomplete="off"
-        class="w-full p-4 rounded-2xl bg-slate-100 text-black focus:ring-2 focus:ring-indigo-500 outline-none">
-      </select>
-    </div>
+    <select id="funcionario" class="rounded-xl px-4 py-3 text-black"></select>
 
-    <div>
-      <label for="data" class="sr-only">Data</label>
-      <input 
-        type="date"
-        id="data"
-        name="data"
-        autocomplete="off"
-        class="w-full p-4 rounded-2xl bg-slate-100 text-black focus:ring-2 focus:ring-indigo-500 outline-none">
-    </div>
+    <input type="date" id="data" class="rounded-xl px-4 py-3 text-black">
 
   </div>
 
-  <!-- AGENDA -->
   <div id="agenda"></div>
 
 </div>
@@ -129,21 +100,10 @@ button, select, input, div {
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  onSnapshot,
-  deleteDoc,
-  doc
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, getDocs, onSnapshot, deleteDoc, doc } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCWJZiUilkri_oCN4rLvmqFV5H_GhvEd6E",
@@ -158,8 +118,12 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+
 const loginArea = document.getElementById("loginArea");
 const agendaArea = document.getElementById("agendaArea");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
 const funcionarioSelect = document.getElementById("funcionario");
 const dataInput = document.getElementById("data");
 const agendaDiv = document.getElementById("agenda");
@@ -169,31 +133,34 @@ let unsubscribe = null;
 
 dataInput.valueAsDate = new Date();
 
-window.login = async function() {
+loginBtn.addEventListener("click", async () => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
+
   try {
     await signInWithEmailAndPassword(auth, email, password);
   } catch {
     document.getElementById("loginError").innerText = "Email ou senha inválidos";
   }
-}
+});
 
-window.logout = async function() {
+logoutBtn.addEventListener("click", async () => {
   await signOut(auth);
-}
+});
 
 onAuthStateChanged(auth, async (user) => {
 
   if (!user) {
+    if (unsubscribe) unsubscribe();
     loginArea.classList.remove("hidden");
     agendaArea.classList.add("hidden");
-    if (unsubscribe) unsubscribe();
     return;
   }
 
   const adminSnap = await getDocs(collection(db,"admins"));
-  if(!adminSnap.docs.find(d=>d.id===user.uid)){
+  const isAdmin = adminSnap.docs.find(d=>d.id===user.uid);
+
+  if(!isAdmin){
     alert("Sem permissão.");
     await signOut(auth);
     return;
@@ -205,6 +172,7 @@ onAuthStateChanged(auth, async (user) => {
   carregarFuncionarios();
   carregarAgendamentos();
 });
+
 
 async function carregarFuncionarios() {
   const snap = await getDocs(collection(db,"funcionarios"));
@@ -231,24 +199,15 @@ function renderAgenda(){
   const funcionario = funcionarioSelect.value.trim().toLowerCase();
   const data = dataInput.value;
 
-  const partes = data.split("-");
-  const ano = parseInt(partes[0]);
-  const mes = parseInt(partes[1]) - 1;
-  const dia = parseInt(partes[2]);
+  const dataLocal = new Date(data+"T00:00");
+  const sexta = dataLocal.getDay()===5;
 
-  const dataLocal = new Date(ano, mes, dia);
-  const diaSemana = dataLocal.getDay();
-
-  let horarios;
-
-  if (diaSemana === 5) {
-    horarios = ["08:00","09:00","10:00","11:00","15:00","16:00","17:00","18:00"];
-  } else {
-    horarios = ["08:00","09:00","10:00","11:00","15:00","16:00","17:00","18:00","19:00"];
-  }
+  const horarios = sexta ?
+  ["08:00","09:00","10:00","11:00","15:00","16:00","17:00","18:00"] :
+  ["08:00","09:00","10:00","11:00","15:00","16:00","17:00","18:00","19:00"];
 
   agendaDiv.innerHTML = `
-    <div class="backdrop-blur-2xl bg-white/5 rounded-[32px] shadow-[0_20px_80px_rgba(0,0,0,0.7)] overflow-hidden border border-white/10">
+    <div class="glass rounded-3xl overflow-hidden">
       <div id="agendaGrid"></div>
     </div>
   `;
@@ -265,58 +224,36 @@ function renderAgenda(){
     );
 
     const row = document.createElement("div");
-    row.className = "grid grid-cols-1 md:grid-cols-[120px_1fr] border-t border-white/5 hover:bg-white/5";
+    row.className = "grid md:grid-cols-[120px_1fr] border-t border-white/10";
 
-    const horaCol = document.createElement("div");
-    horaCol.className = "p-6 font-bold text-slate-400 md:text-center bg-black/20";
-    horaCol.innerText = horario;
-
-    const conteudo = document.createElement("div");
-    conteudo.className = "p-6";
-
-    if(ag){
-      conteudo.innerHTML = `
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 
-        bg-gradient-to-br from-rose-600 to-red-800 
-        p-8 rounded-[28px] shadow-[0_15px_50px_rgba(0,0,0,0.6)] 
-        hover:scale-[1.02]">
-
-          <div class="space-y-2">
-            <p class="font-bold text-2xl">${ag.nomeCompleto}</p>
-            <p class="text-red-200">${ag.servico}</p>
-            <a href="https://wa.me/55${ag.whatsapp}" 
-               target="_blank" 
-               class="underline text-sm break-all">
-              📱 ${ag.whatsapp}
-            </a>
+    row.innerHTML = `
+      <div class="p-6 font-bold text-slate-400 bg-black/20">${horario}</div>
+      <div class="p-6">
+        ${ag ? `
+        <div class="bg-red-700 p-6 rounded-2xl flex justify-between items-center">
+          <div>
+            <p class="font-bold text-lg">${ag.nomeCompleto}</p>
+            <p class="text-red-200 text-sm">${ag.servico}</p>
           </div>
-
-          <button onclick="concluir('${ag.id}')"
-            class="bg-black/30 hover:bg-black/50 px-6 py-3 rounded-2xl font-semibold">
+          <button onclick="window.concluir('${ag.id}')"
+            class="bg-black/40 px-4 py-2 rounded-xl">
             Finalizado
           </button>
-
-        </div>
-      `;
-    } else {
-      conteudo.innerHTML = `
-        <div class="bg-gradient-to-br from-emerald-500 to-green-700 
-        p-8 rounded-[28px] text-center font-semibold shadow-xl text-lg 
-        hover:scale-[1.02]">
+        </div>`
+        :
+        `<div class="bg-green-600 p-6 rounded-2xl text-center font-semibold">
           Disponível
-        </div>
-      `;
-    }
+        </div>`}
+      </div>
+    `;
 
-    row.appendChild(horaCol);
-    row.appendChild(conteudo);
     grid.appendChild(row);
   });
 }
 
 window.concluir = async function(id){
   await deleteDoc(doc(db,"agendamentos",id));
-}
+};
 
 funcionarioSelect.addEventListener("change",renderAgenda);
 dataInput.addEventListener("change",renderAgenda);

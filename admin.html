@@ -7,6 +7,7 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link rel="shortcut icon" href="assets/favicon.svg" type="image/x-icon">
 
 <style>
 body{
@@ -56,7 +57,6 @@ input, select{
 
 <body class="p-6 md:p-12">
 
-<!-- LOGIN -->
 <div id="loginModal" class="fixed inset-0 bg-black/70 backdrop-blur-xl flex justify-center items-center z-50">
   <div class="glass w-[400px] p-10 rounded-3xl">
     <h2 class="text-3xl font-bold mb-6 text-center text-white">Painel Admin</h2>
@@ -74,10 +74,8 @@ input, select{
   </div>
 </div>
 
-<!-- PAINEL -->
 <div id="topArea" class="hidden max-w-7xl mx-auto pt-10">
 
-<!-- HEADER -->
 <div class="flex justify-between items-center mb-10 flex-wrap gap-4">
 <h1 class="text-4xl font-bold flex items-center gap-3 text-white">
 <i class="fas fa-clinic-medical text-indigo-400"></i> Fisiomasso Painel-Admin
@@ -98,7 +96,6 @@ class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-xl shadow-lg tra
 </div>
 </div>
 
-<!-- FORM AGENDAMENTO -->
 <div id="formAgendamento" class="hidden glass p-6 rounded-3xl mb-8">
 <h2 class="text-xl font-bold mb-4 text-white">Criar Agendamento</h2>
 <div class="grid md:grid-cols-2 gap-4 mb-4">
@@ -115,7 +112,6 @@ class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-xl flex it
 </button>
 </div>
 
-<!-- FORM FUNCIONÁRIO -->
 <div id="formFuncionario" class="hidden glass p-6 rounded-3xl mb-8">
 <h2 class="text-xl font-bold mb-4 text-white">Gerenciar Funcionários</h2>
 <div class="grid md:grid-cols-2 gap-4 mb-4">
@@ -128,7 +124,6 @@ class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-xl flex it
 <div class="grid gap-2" id="listaFuncionarios"></div>
 </div>
 
-<!-- ESTATÍSTICAS -->
 <div class="grid md:grid-cols-4 gap-6 mb-8">
 <div class="glass p-6 rounded-3xl text-center text-blue-500">
 <p class="text-slate-400 text-sm">Total</p>
@@ -148,35 +143,32 @@ class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-xl flex it
 </div>
 </div>
 
-<!-- FILTROS -->
 <div class="flex flex-col md:flex-row gap-4 mb-6">
-<input id="searchInput" type="text"
-placeholder="Buscar por nome, WhatsApp ou data..."
-class="flex-1 rounded-xl px-4 py-2">
-<input id="filtroData" type="date"
-class="rounded-xl px-4 py-2">
-<select id="filtroStatus"
-class="rounded-xl px-4 py-2">
-<option value="todos">Todos</option>
-<option value="pendente">Pendentes</option>
-<option value="confirmado">Confirmados</option>
-<option value="cancelado">Cancelados</option>
-</select>
-</div>
+  <input id="searchInput" type="text"
+    placeholder="Buscar por nome ou WhatsApp..."
+    class="flex-1 rounded-xl px-4 py-2">
+  <input id="filtroData" type="date"
+    class="rounded-xl px-4 py-2">
+  <select id="filtroStatus"
+    class="rounded-xl px-4 py-2">
+  <option value="todos">Todos</option>
+  <option value="pendente">Pendentes</option>
+  <option value="confirmado">Confirmados</option>
+  <option value="cancelado">Cancelados</option>
+  <option value="indefinido">Indefinido</option>
+  </select>
+  </div>
 
 <!-- CARDS -->
 <div id="cards" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 
 </div>
 
-<!-- 🔥 SEU SCRIPT ORIGINAL AQUI (NÃO ALTERADO) -->
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// --- Config Firebase ---
 const firebaseConfig = {
   apiKey: "AIzaSyCWJZiUilkri_oCN4rLvmqFV5H_GhvEd6E",
   authDomain: "fisioterapia-agendamento.firebaseapp.com",
@@ -190,7 +182,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// --- ELEMENTOS ---
 const loginModal = document.getElementById("loginModal");
 const topArea = document.getElementById("topArea");
 const cards = document.getElementById("cards");
@@ -206,7 +197,6 @@ let agendamentos = [];
 let funcionarios = [];
 let unsubscribeAgendamentos = null;
 
-// --- FUNÇÕES LOGIN/LOGOUT ---
 window.login = async function() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -221,13 +211,11 @@ window.logout = async function() {
   await signOut(auth);
 }
 
-// --- TOGGLE FORM ---
 window.toggleForm = function(tipo) {
   if(tipo==='agendamento') formAgendamento.classList.toggle("hidden");
   if(tipo==='funcionario') formFuncionario.classList.toggle("hidden");
 }
 
-// --- AUTH + CARREGAR DADOS ---
 onAuthStateChanged(auth, async (user) => {
   if(!user) {
     if(unsubscribeAgendamentos) unsubscribeAgendamentos();
@@ -236,7 +224,6 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  // Verifica admin
   const adminSnap = await getDocs(collection(db,"admins"));
   if(!adminSnap.docs.find(d=>d.id===user.uid)) { alert("Você não tem permissão."); await signOut(auth); return; }
 
@@ -247,15 +234,12 @@ onAuthStateChanged(auth, async (user) => {
   carregarAgendamentosListener();
 });
 
-// --- CARREGAR FUNCIONÁRIOS ---
 async function carregarFuncionarios() {
   const snap = await getDocs(collection(db,"funcionarios"));
   funcionarios = snap.docs.map(d=>({id:d.id, nome:d.data().nome}));
 
-  // select agendamento
   funcSelectAdmin.innerHTML = `<option value="">Selecione Funcionário</option>` + funcionarios.map(f=>`<option value="${f.nome}">${f.nome}</option>`).join('');
 
-  // lista para remover
   listaFuncionarios.innerHTML = '';
   funcionarios.forEach(f=>{
     const div = document.createElement('div');
@@ -266,7 +250,6 @@ async function carregarFuncionarios() {
   });
 }
 
-// --- ADICIONAR FUNCIONÁRIO ---
 window.adicionarFuncionario = async function() {
   const nome = document.getElementById("nomeFuncionario").value.trim();
   if(!nome) { alert("Digite o nome do funcionário!"); return; }
@@ -275,14 +258,12 @@ window.adicionarFuncionario = async function() {
   carregarFuncionarios();
 }
 
-// --- REMOVER FUNCIONÁRIO ---
 window.removerFuncionario = async function(id) {
   if(!confirm("Tem certeza que deseja remover este funcionário?")) return;
   await deleteDoc(doc(db,"funcionarios",id));
   carregarFuncionarios();
 }
 
-// --- CARREGAR AGENDAMENTOS (LISTENER) ---
 function carregarAgendamentosListener() {
   if(unsubscribeAgendamentos) unsubscribeAgendamentos();
   unsubscribeAgendamentos = onSnapshot(collection(db,"agendamentos"), snapshot=>{
@@ -292,17 +273,15 @@ function carregarAgendamentosListener() {
   });
 }
 
-// --- FORMATAR DATA DD/MM/YYYY ---
 function formatarData(dataStr) {
   if(!dataStr) return "-";
-  const d = new Date(dataStr+"T00:00"); // evita subtrair 1 dia
+  const d = new Date(dataStr+"T00:00"); 
   const day = String(d.getDate()).padStart(2,'0');
   const month = String(d.getMonth()+1).padStart(2,'0');
   const year = d.getFullYear();
   return `${day}/${month}/${year}`;
 }
 
-// --- RENDER CARDS ---
 function renderCards() {
   const busca = searchInput.value.toLowerCase();
   const filtro = filtroStatus.value;
@@ -315,7 +294,11 @@ function renderCards() {
      (a.data ? formatarData(a.data).includes(busca) : false))
   ));
   if(filtroDia) lista = lista.filter(a=>a.data===filtroDia);
-  if(filtro!=='todos') lista = lista.filter(a=>a.status===filtro);
+  if(filtro === 'indefinido'){
+  lista = lista.filter(a => a.funcionario === "indefinido");
+  } else if(filtro !== 'todos'){
+    lista = lista.filter(a=>a.status===filtro);
+  }
 
   lista.sort((a,b)=>{
     if(!a.data) return -1;
@@ -352,7 +335,7 @@ function renderCards() {
             <button onclick="window.cancelarAgendamento('${a.id}')" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl flex-1 flex justify-center items-center gap-2"><i class="fas fa-times"></i> Cancelar</button>
           </div>
         </div>` : `
-        <p class="text-gray-700 mb-2"><i class="fas fa-calendar-day text-blue-500"></i> ${formatarData(a.data)} | <i class="fas fa-clock text-blue-500"></i> ${a.horario||"-"} | <i class="fas fa-user text-purple-500"></i> ${a.funcionario||"-"}</p>
+        <p class="text-gray-700 mb-2"><i class="fas fa-calendar-day text-blue-500"></i> ${formatarData(a.data)} | <i class="fas fa-clock text-blue-500"></i> ${a.horario||"-"} | <i class="fas fa-user text-purple-500"></i> ${a.funcionario||"indefinido"}</p>
         <div class="flex gap-2">
           <button onclick="window.restaurarAgendamento('${a.id}')" class="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-xl flex-1 flex justify-center items-center gap-2"><i class="fas fa-undo"></i> Restaurar</button>
           <button onclick="window.cancelarAgendamento('${a.id}')" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl flex-1 flex justify-center items-center gap-2"><i class="fas fa-times"></i> Cancelar</button>
@@ -362,7 +345,6 @@ function renderCards() {
   });
 }
 
-// --- FUNÇÕES AGENDAMENTO ---
 window.salvarAgendamento = async function(id) {
   const data = document.getElementById(`data_${id}`).value;
   const hora = document.getElementById(`hora_${id}`).value;
@@ -382,7 +364,6 @@ window.restaurarAgendamento = async function(id) {
   renderCards();
 }
 
-// --- CRIAR AGENDAMENTO ---
 window.criarAgendamento = async function() {
   const nome = document.getElementById("nomeAdmin").value.trim();
   const whatsapp = document.getElementById("whatsappAdmin").value.trim();
@@ -401,7 +382,6 @@ window.criarAgendamento = async function() {
   formAgendamento.classList.add("hidden");
 }
 
-// --- ESTATÍSTICAS ---
 function atualizarEstatisticas() {
   const total = agendamentos.length;
   const pendentes = agendamentos.filter(a=>a.status==='pendente').length;
@@ -413,7 +393,6 @@ function atualizarEstatisticas() {
   document.getElementById("canceladosCount").innerText = cancelados;
 }
 
-// --- EVENT LISTENERS ---
 searchInput.addEventListener("input", renderCards);
 filtroStatus.addEventListener("change", renderCards);
 filtroData.addEventListener("change", renderCards);

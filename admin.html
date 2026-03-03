@@ -89,6 +89,10 @@ class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-xl shado
 class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-xl shadow-lg transition">
 <i class="fas fa-users"></i> Gerenciar Funcionários
 </button>
+<button onclick="window.toggleHistorico()"
+class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl shadow-lg transition">
+<i class="fas fa-clock-rotate-left"></i> Histórico
+</button>
 <button onclick="window.logout()"
 class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-xl shadow-lg transition">
 <i class="fas fa-arrow-right-from-bracket"></i> Sair
@@ -196,6 +200,7 @@ const filtroData = document.getElementById("filtroData");
 let agendamentos = [];
 let funcionarios = [];
 let unsubscribeAgendamentos = null;
+let mostrandoHistorico = false;
 
 window.login = async function() {
   const email = document.getElementById("email").value;
@@ -214,6 +219,11 @@ window.logout = async function() {
 window.toggleForm = function(tipo) {
   if(tipo==='agendamento') formAgendamento.classList.toggle("hidden");
   if(tipo==='funcionario') formFuncionario.classList.toggle("hidden");
+}
+
+window.toggleHistorico = function() {
+  mostrandoHistorico = !mostrandoHistorico;
+  renderCards();
 }
 
 onAuthStateChanged(auth, async (user) => {
@@ -264,6 +274,12 @@ window.removerFuncionario = async function(id) {
   carregarFuncionarios();
 }
 
+window.excluirAgendamento = async function(id) {
+  if(!confirm("Tem certeza que deseja EXCLUIR permanentemente este agendamento?")) return;
+
+  await deleteDoc(doc(db,"agendamentos",id));
+}
+
 function carregarAgendamentosListener() {
   if(unsubscribeAgendamentos) unsubscribeAgendamentos();
   unsubscribeAgendamentos = onSnapshot(collection(db,"agendamentos"), snapshot=>{
@@ -288,6 +304,12 @@ function renderCards() {
   const filtroDia = filtroData.value;
 
   let lista = [...agendamentos];
+  // 🔥 CONTROLE HISTÓRICO
+  if(mostrandoHistorico){
+    lista = lista.filter(a => a.status === "finalizado");
+  } else {
+    lista = lista.filter(a => a.status !== "finalizado");
+  }
   lista = lista.filter(a=>(
     (a.nomeCompleto?.toLowerCase().includes(busca) ||
      a.whatsapp?.includes(busca) ||
@@ -308,39 +330,99 @@ function renderCards() {
 
   cards.innerHTML = '';
   lista.forEach(a=>{
-    const statusColor = a.status==='cancelado'?'bg-red-100 text-red-700':
-                        a.status==='confirmado'?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700';
+    const statusColor =
+  a.status==='cancelado'?'bg-red-100 text-red-700':
+  a.status==='confirmado'?'bg-green-100 text-green-700':
+  a.status==='finalizado'?'bg-indigo-100 text-indigo-700':
+  'bg-yellow-100 text-yellow-700';
 
     const card = document.createElement('div');
     card.className = 'bg-white p-6 rounded-3xl shadow hover:shadow-xl transition fade-in';
     card.innerHTML = `
-      <div class="flex justify-between items-center mb-3">
-        <h3 class="font-bold text-lg">${a.nomeCompleto||"-"}</h3>
-        <span class="px-3 py-1 text-xs rounded-full font-semibold ${statusColor}">
-          ${a.status==='pendente'?'Aguardando': a.status==='confirmado'?'Confirmado':'Cancelado'}
-        </span>
+  <div class="flex justify-between items-center mb-3">
+    <h3 class="font-bold text-lg">${a.nomeCompleto||"-"}</h3>
+    <span class="px-3 py-1 text-xs rounded-full font-semibold ${statusColor}">
+      ${a.status==='pendente'?'Aguardando':
+        a.status==='confirmado'?'Confirmado':
+        a.status==='finalizado'?'Finalizado':
+        'Cancelado'}
+    </span>
+  </div>
+
+  <p class="text-gray-600 mb-1">
+    <i class="fab fa-whatsapp text-green-500"></i> ${a.whatsapp||"-"}
+  </p>
+
+  <p class="text-gray-600 mb-3">
+    <i class="fas fa-spa text-purple-500"></i> ${a.servico||"-"}
+  </p>
+
+  ${a.status==='pendente' ? `
+
+    <div class="flex flex-col gap-2 mb-3">
+      <input type="date" id="data_${a.id}" class="border px-3 py-2 rounded-xl focus:ring-2 focus:ring-blue-400">
+      <input type="time" id="hora_${a.id}" class="border px-3 py-2 rounded-xl focus:ring-2 focus:ring-blue-400">
+
+      <select id="func_${a.id}" class="border px-3 py-2 rounded-xl focus:ring-2 focus:ring-blue-400">
+        <option value="">Selecione funcionário</option>
+        ${funcionarios.map(f=>`<option value="${f.nome}">${f.nome}</option>`).join('')}
+      </select>
+
+      <div class="flex gap-2">
+        <button onclick="window.salvarAgendamento('${a.id}')"
+          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl flex-1 flex justify-center items-center gap-2">
+          <i class="fas fa-check"></i> Salvar
+        </button>
+
+        <button onclick="window.cancelarAgendamento('${a.id}')"
+          class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl flex-1 flex justify-center items-center gap-2">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
       </div>
-      <p class="text-gray-600 mb-1"><i class="fab fa-whatsapp text-green-500"></i> ${a.whatsapp||"-"}</p>
-      <p class="text-gray-600 mb-3"><i class="fas fa-spa text-purple-500"></i> ${a.servico||"-"}</p>
-      ${a.status==='pendente' ? `
-        <div class="flex flex-col gap-2 mb-3">
-          <input type="date" id="data_${a.id}" class="border px-3 py-2 rounded-xl focus:ring-2 focus:ring-blue-400">
-          <input type="time" id="hora_${a.id}" class="border px-3 py-2 rounded-xl focus:ring-2 focus:ring-blue-400">
-          <select id="func_${a.id}" class="border px-3 py-2 rounded-xl focus:ring-2 focus:ring-blue-400">
-            <option value="">Selecione funcionário</option>
-            ${funcionarios.map(f=>`<option value="${f.nome}">${f.nome}</option>`).join('')}
-          </select>
-          <div class="flex gap-2">
-            <button onclick="window.salvarAgendamento('${a.id}')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl flex-1 flex justify-center items-center gap-2"><i class="fas fa-check"></i> Salvar</button>
-            <button onclick="window.cancelarAgendamento('${a.id}')" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl flex-1 flex justify-center items-center gap-2"><i class="fas fa-times"></i> Cancelar</button>
-          </div>
-        </div>` : `
-        <p class="text-gray-700 mb-2"><i class="fas fa-calendar-day text-blue-500"></i> ${formatarData(a.data)} | <i class="fas fa-clock text-blue-500"></i> ${a.horario||"-"} | <i class="fas fa-user text-purple-500"></i> ${a.funcionario||"indefinido"}</p>
-        <div class="flex gap-2">
-          <button onclick="window.restaurarAgendamento('${a.id}')" class="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-xl flex-1 flex justify-center items-center gap-2"><i class="fas fa-undo"></i> Restaurar</button>
-          <button onclick="window.cancelarAgendamento('${a.id}')" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl flex-1 flex justify-center items-center gap-2"><i class="fas fa-times"></i> Cancelar</button>
-        </div>`}
-    `;
+    </div>
+
+  ` : `
+
+    <p class="text-gray-700 mb-2">
+      <i class="fas fa-calendar-day text-blue-500"></i> ${formatarData(a.data)} |
+      <i class="fas fa-clock text-blue-500"></i> ${a.horario||"-"} |
+      <i class="fas fa-user text-purple-500"></i> ${a.funcionario||"indefinido"}
+    </p>
+
+    <div class="flex gap-2">
+
+      ${a.status !== 'finalizado' ? `
+        <button onclick="window.finalizarAgendamento('${a.id}')"
+          class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl flex-1 flex justify-center items-center gap-2">
+          <i class="fas fa-check-double"></i> Finalizar
+        </button>
+      ` : ''}
+
+      ${a.status !== 'cancelado' ? `
+        <button onclick="window.cancelarAgendamento('${a.id}')"
+          class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl flex-1 flex justify-center items-center gap-2">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+      ` : ''}
+
+      ${(a.status === 'finalizado' || a.status === 'cancelado') ? `
+        <button onclick="window.restaurarAgendamento('${a.id}')"
+          class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-xl flex-1 flex justify-center items-center gap-2">
+          <i class="fas fa-undo"></i> Restaurar
+        </button>
+      ` : ''}
+
+      ${mostrandoHistorico && a.status === 'finalizado' ? `
+        <button onclick="window.excluirAgendamento('${a.id}')"
+          class="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-xl flex-1 flex justify-center items-center gap-2">
+          <i class="fas fa-trash"></i> Excluir
+        </button>
+      ` : ''}
+
+    </div>
+
+  `}
+`;
     cards.appendChild(card);
   });
 }
@@ -361,6 +443,11 @@ window.cancelarAgendamento = async function(id) {
 
 window.restaurarAgendamento = async function(id) {
   await updateDoc(doc(db,"agendamentos",id), { status:'pendente', data:null, horario:null, funcionario:null });
+  renderCards();
+}
+
+window.finalizarAgendamento = async function(id) {
+  await updateDoc(doc(db,"agendamentos",id), { status:'finalizado' });
   renderCards();
 }
 

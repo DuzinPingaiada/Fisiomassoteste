@@ -43,6 +43,11 @@
         .btn-hover:active { transform: translateY(0); }
         #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
         .toast { padding: 12px 24px; border-radius: 12px; color: white; font-weight: bold; font-size: 14px; animation: fadeIn 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; min-width: 200px; }
+
+        input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -113,7 +118,12 @@
             </div>
             <div class="flex-1 min-w-[150px]">
                 <label for="searchDate" class="sr-only">Filtrar por data</label>
-                <input id="searchDate" name="searchDate" type="date" class="w-full px-4 py-4 bg-gray-50 border-none rounded-2xl outline-none font-bold text-secondary text-sm">
+                <input 
+                    id="searchDate"
+                    name="searchDate"
+                    type="date"
+                    class="w-full h-[52px] px-4 bg-gray-50 border-none rounded-2xl outline-none font-bold text-secondary text-sm appearance-none"
+                >
             </div>
             <div class="flex-1 min-w-[150px]">
                 <label for="filtroStatus" class="sr-only">Filtrar por Status</label>

@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+    <link rel="shortcut icon" href="assets/favicon.svg" type="image/x-icon">
 
     <script>
         tailwind.config = {
@@ -35,7 +36,6 @@
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Estilo de Planilha Profissional */
         .table-row-hover:hover { background-color: #F1F5F9; }
         .bg-occupied { background-color: rgba(0, 146, 184, 0.03); }
         
@@ -57,7 +57,7 @@
         <div class="space-y-4 text-left">
             <div>
                 <label for="email" class="text-[10px] font-800 text-gray-400 uppercase ml-2 mb-1 block">E-mail</label>
-                <input id="email" name="email" type="email" autocomplete="email" placeholder="seu@email.com" class="w-full rounded-2xl px-5 py-4 border border-gray-100 bg-gray-50 outline-none focus:ring-2 ring-primary/20">
+                <input id="email" name="email" type="email" autocomplete="username" placeholder="seu@email.com" class="w-full rounded-2xl px-5 py-4 border border-gray-100 bg-gray-50 outline-none focus:ring-2 ring-primary/20">
             </div>
             <div>
                 <label for="password" class="text-[10px] font-800 text-gray-400 uppercase ml-2 mb-1 block">Senha</label>
@@ -183,7 +183,7 @@ async function carregarFuncionarios() {
     funcionarioSelect.innerHTML = snap.docs.map(d =>
         `<option value="${d.data().nome}">${d.data().nome}</option>`
     ).join('');
-    renderAgenda(); // Renderiza após carregar os nomes
+    renderAgenda(); 
 }
 
 function carregarAgendamentos(){
@@ -226,15 +226,15 @@ function renderAgenda(){
             <td class="px-6 py-4">
                 ${ag ? `
                     <div class="flex flex-col">
-                        <span class="text-sm font-800 text-secondary uppercase">${ag.nomeCompleto}</span>
-                        <span class="text-[10px] text-primary font-bold md:hidden">${ag.servico}</span>
+                        <span class="text-sm font-800 text-secondary uppercase">${ag.nomeAdmin || 'Paciente'}</span>
+                        <span class="text-[10px] text-primary font-bold md:hidden">${ag.servicoAdmin || 'Serviço'}</span>
                     </div>
                 ` : `
                     <span class="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Livre</span>
                 `}
             </td>
             <td class="px-6 py-4 hidden md:table-cell">
-                ${ag ? `<span class="text-xs font-semibold text-gray-500 uppercase">${ag.servico}</span>` : '-'}
+                ${ag ? `<span class="text-xs font-semibold text-gray-500 uppercase">${ag.servicoAdmin || 'Geral'}</span>` : '-'}
             </td>
             <td class="px-6 py-4">
                 <div class="flex justify-center gap-2">
@@ -243,7 +243,7 @@ function renderAgenda(){
                             class="bg-primary text-white p-2.5 rounded-xl btn-hover shadow-sm">
                             <i class="ph ph-check-circle text-lg"></i>
                         </button>
-                        <a href="https://wa.me/${ag.whatsapp?.replace(/\D/g,'')}" target="_blank" title="Chamar no WhatsApp"
+                        <a href="https://wa.me/${ag.whatsappAdmin?.replace(/\D/g,'')}" target="_blank" title="Chamar no WhatsApp"
                             class="bg-success text-white p-2.5 rounded-xl btn-hover shadow-sm">
                             <i class="ph ph-whatsapp-logo text-lg"></i>
                         </a>
@@ -265,7 +265,6 @@ window.concluir = async function(id){
 
 funcionarioSelect.addEventListener("change",renderAgenda);
 dataInput.addEventListener("change",renderAgenda);
-
 </script>
 </body>
 </html>

@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+    <link rel="shortcut icon" href="assets/favicon.svg" type="image/x-icon">
 
     <script>
         tailwind.config = {
@@ -37,11 +38,9 @@
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         input:focus, select:focus { border-color: #0092B8 !important; outline: none; box-shadow: 0 0 0 2px rgba(0, 146, 184, 0.1); }
-        
         .btn-hover { transition: all 0.2s ease; cursor: pointer; }
         .btn-hover:hover { filter: brightness(1.1); transform: translateY(-1px); }
         .btn-hover:active { transform: translateY(0); }
-
         #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
         .toast { padding: 12px 24px; border-radius: 12px; color: white; font-weight: bold; font-size: 14px; animation: fadeIn 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; min-width: 200px; }
     </style>
@@ -100,7 +99,7 @@
                 <p class="text-[10px] uppercase font-800 text-gray-400 tracking-widest mb-1">Confirmados</p>
                 <span id="confirmadosCount" class="text-3xl font-800 text-green-500">0</span>
             </div>
-            <button onclick="window.toggleHistorico()" id="btnHistorico" class="bg-white p-6 rounded-[32px] border border-gray-100 card-shadow flex flex-col items-center justify-center gap-1 btn-hover transition-colors duration-300">
+            <button onclick="window.toggleHistorico()" id="btnHistorico" class="bg-white p-6 rounded-[32px] border border-gray-100 card-shadow flex flex-col items-center justify-center gap-1 btn-hover">
                 <p id="txtHistorico" class="text-[10px] uppercase font-800 text-history tracking-widest">Histórico (<span id="historicoCount">0</span>)</p>
                 <i id="iconHistorico" class="ph ph-clock-counter-clockwise text-2xl text-history"></i>
             </button>
@@ -108,7 +107,7 @@
 
         <div class="bg-white p-4 rounded-[28px] border border-gray-100 card-shadow flex flex-wrap md:flex-row gap-3 mb-8">
             <div class="relative flex-[2] min-w-[200px]">
-                <label for="searchInput" class="sr-only">Buscar agendamento</label>
+                <label for="searchInput" class="sr-only">Buscar por nome ou WhatsApp</label>
                 <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input id="searchInput" name="searchInput" type="text" placeholder="Buscar por nome ou WhatsApp..." class="w-full pl-12 pr-4 py-4 bg-gray-50 border-none rounded-2xl outline-none">
             </div>
@@ -116,13 +115,15 @@
                 <label for="searchDate" class="sr-only">Filtrar por data</label>
                 <input id="searchDate" name="searchDate" type="date" class="w-full px-4 py-4 bg-gray-50 border-none rounded-2xl outline-none font-bold text-secondary text-sm">
             </div>
-            <label for="filtroStatus" class="sr-only">Filtrar por status</label>
-            <select id="filtroStatus" name="filtroStatus" class="flex-1 min-w-[150px] bg-gray-50 border-none rounded-2xl px-4 py-4 text-sm font-bold text-secondary outline-none cursor-pointer">
-                <option value="todos">Todos Status</option>
-                <option value="pendente">Aguardando</option>
-                <option value="confirmado">Confirmado</option>
-                <option value="sem_funcionario">Sem Funcionário</option>
-            </select>
+            <div class="flex-1 min-w-[150px]">
+                <label for="filtroStatus" class="sr-only">Filtrar por Status</label>
+                <select id="filtroStatus" name="filtroStatus" class="w-full bg-gray-50 border-none rounded-2xl px-4 py-4 text-sm font-bold text-secondary outline-none cursor-pointer">
+                    <option value="todos">Todos Status</option>
+                    <option value="pendente">Aguardando</option>
+                    <option value="confirmado">Confirmado</option>
+                    <option value="sem_funcionario">Sem Funcionário</option>
+                </select>
+            </div>
             <button onclick="window.toggleForm('funcionario')" class="bg-secondary text-white px-6 py-4 rounded-2xl font-bold text-xs uppercase tracking-widest btn-hover">Equipe</button>
         </div>
 
@@ -147,7 +148,16 @@
             </div>
             <div>
                 <label for="servicoAdmin" class="text-[10px] font-800 text-gray-400 uppercase ml-2 block">Serviço</label>
-                <input type="text" id="servicoAdmin" name="servicoAdmin" class="w-full px-5 py-3 bg-gray-50 border border-gray-100 rounded-2xl outline-none">
+                <input type="text" id="servicoAdmin" name="servicoAdmin" list="servicosLista" placeholder="Selecione ou digite..." class="w-full px-5 py-3 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-secondary">
+                <datalist id="servicosLista">
+                    <option value="Pós-Operatório">
+                    <option value="Reabilitação">
+                    <option value="Preparação Física">
+                    <option value="Fisioterapia Pediátrica">
+                    <option value="Cuidado e Prevenção na Terceira Idade">
+                    <option value="Liberação Miofascial e Alívio de Dores">
+                    <option value="Fisioterapia Preventiva">
+                </datalist>
             </div>
             <div>
                 <label for="funcAdmin" class="text-[10px] font-800 text-gray-400 uppercase ml-2 block">Profissional</label>
@@ -156,38 +166,45 @@
         </div>
         <div class="border-t border-gray-100 pt-6 mb-6">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-[10px] font-900 text-secondary uppercase tracking-[2px]">Datas e Horários</h3>
+                <h3 class="text-[10px] font-900 text-secondary uppercase tracking-[2px]">Datas Escolhidas</h3>
                 <button onclick="window.addDataRow()" class="flex items-center gap-2 text-primary font-800 text-[10px] uppercase btn-hover">
                     <i class="ph ph-plus-circle text-xl"></i> Adicionar Manual
                 </button>
             </div>
-            <div id="datasContainer" class="space-y-3 mb-6"></div>
+            <div id="datasContainer" class="space-y-3 mb-6 max-h-[200px] overflow-y-auto pr-2"></div>
             <div class="text-center">
-                <button onclick="window.toggleRecurrencia()" class="text-[11px] font-700 text-primary hover:underline uppercase tracking-widest">
-                    <i class="ph ph-magic-wand"></i> Agendamento de Longo Prazo (Automático)
+                <button onclick="window.toggleRecurrencia()" class="bg-gray-100 px-6 py-3 rounded-2xl text-[11px] font-700 text-primary hover:bg-primary hover:text-white transition-all uppercase tracking-widest">
+                    <i class="ph ph-magic-wand"></i> Gerar Longo Prazo (Automático)
                 </button>
             </div>
-            <div id="panelRecurrencia" class="hidden mt-4 bg-gray-50 p-6 rounded-[32px] border border-gray-100 fade-in">
-                <h3 class="text-[10px] font-900 text-primary uppercase mb-4 tracking-widest">Configurar Dias e Horários</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label for="dataInicioRec" class="text-[9px] font-800 text-gray-400 uppercase ml-2 block">Data de Início</label>
-                        <input type="date" id="dataInicioRec" name="dataInicioRec" class="w-full px-4 py-2 rounded-xl border border-gray-200 text-sm">
-                    </div>
-                    <div>
-                        <label for="mesesRec" class="text-[9px] font-800 text-gray-400 uppercase ml-2 block">Duração do Plano</label>
-                        <select id="mesesRec" name="mesesRec" class="w-full px-4 py-2 rounded-xl border border-gray-200 text-sm font-bold">
-                            <option value="1">1 Mês</option>
-                            <option value="2">2 Meses</option>
-                            <option value="3">3 Meses</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6" id="diasSemanaContainer"></div>
-                <button onclick="window.gerarDatasRecorrentes()" class="w-full bg-secondary text-white text-[10px] font-800 py-4 rounded-2xl uppercase btn-hover shadow-lg">Gerar Agenda Completa</button>
+        </div>
+        <button onclick="window.criarAgendamento()" class="w-full bg-primary text-white py-5 rounded-[24px] font-800 uppercase tracking-widest shadow-lg shadow-primary/20 btn-hover">Salvar Registros</button>
+    </div>
+</div>
+
+<div id="modalRecurrencia" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] flex justify-center items-center px-4">
+    <div class="bg-white w-full max-w-[500px] p-8 rounded-[40px] shadow-2xl fade-in">
+        <h3 class="text-lg font-900 text-primary uppercase mb-6 tracking-widest text-center">Configurar Recorrência</h3>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div>
+                <label for="dataInicioRec" class="text-[9px] font-800 text-gray-400 uppercase ml-2 block">Data de Início</label>
+                <input type="date" id="dataInicioRec" name="dataInicioRec" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm font-bold">
+            </div>
+            <div>
+                <label for="mesesRec" class="text-[9px] font-800 text-gray-400 uppercase ml-2 block">Duração</label>
+                <select id="mesesRec" name="mesesRec" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm font-bold">
+                    <option value="1">1 Mês</option>
+                    <option value="2">2 Meses</option>
+                    <option value="3">3 Meses</option>
+                    <option value="6">6 Meses</option>
+                </select>
             </div>
         </div>
-        <button onclick="window.criarAgendamento()" class="w-full bg-primary text-white py-5 rounded-[24px] font-800 uppercase tracking-widest shadow-lg shadow-primary/20 btn-hover">Salvar Todos os Registros</button>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8" id="diasSemanaContainer"></div>
+        <div class="flex gap-3">
+            <button onclick="window.toggleRecurrencia()" class="flex-1 bg-gray-100 text-gray-500 py-4 rounded-2xl font-bold uppercase text-xs btn-hover">Cancelar</button>
+            <button onclick="window.gerarDatasRecorrentes()" class="flex-[2] bg-secondary text-white text-[10px] font-800 py-4 rounded-2xl uppercase btn-hover shadow-lg">Gerar Agenda</button>
+        </div>
     </div>
 </div>
 
@@ -199,7 +216,7 @@
         </div>
         <div class="flex gap-2 mb-8">
             <div class="flex-1">
-                <label for="nomeFuncionario" class="sr-only">Nome do profissional</label>
+                <label for="nomeFuncionario" class="sr-only">Nome do Profissional</label>
                 <input type="text" id="nomeFuncionario" name="nomeFuncionario" placeholder="Nome do profissional..." class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none">
             </div>
             <button onclick="window.adicionarFuncionario()" class="bg-primary text-white px-6 rounded-2xl font-bold uppercase text-xs btn-hover">Add</button>
@@ -251,25 +268,25 @@ window.logout = () => signOut(auth);
 window.toggleForm = (id) => {
     const el = document.getElementById(id === 'agendamento' ? 'formAgendamento' : 'formFuncionario');
     el.classList.toggle('hidden');
-    if(id === 'agendamento') {
-        document.getElementById("panelRecurrencia").classList.add('hidden');
+    if(id === 'agendamento' && !el.classList.contains('hidden')) {
         document.getElementById("datasContainer").innerHTML = '';
         window.addDataRow();
     }
 };
 
 window.toggleRecurrencia = () => {
-    const panel = document.getElementById("panelRecurrencia");
-    panel.classList.toggle('hidden');
-    if(!panel.classList.contains('hidden')) {
+    const modal = document.getElementById("modalRecurrencia");
+    modal.classList.toggle('hidden');
+    if(!modal.classList.contains('hidden')) {
         const dias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
         document.getElementById("diasSemanaContainer").innerHTML = dias.map((dia, idx) => `
-            <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm ${ (idx === 0 || idx === 6) ? 'opacity-40 grayscale' : '' }">
-                <label class="flex items-center gap-2 cursor-pointer mb-2" for="check_rec_${idx}">
-                    <input type="checkbox" id="check_rec_${idx}" name="check_rec_${idx}" value="${idx}" class="dia-check w-4 h-4 accent-primary" ${ (idx === 0 || idx === 6) ? 'disabled' : '' }>
+            <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 ${ (idx === 0 || idx === 6) ? 'opacity-40' : '' }">
+                <label class="flex items-center gap-2 cursor-pointer mb-2">
+                    <input type="checkbox" value="${idx}" class="dia-check w-4 h-4 accent-primary" ${ (idx === 0 || idx === 6) ? 'disabled' : '' }>
                     <span class="text-[10px] font-800 uppercase text-secondary">${dia}</span>
                 </label>
-                <input type="time" id="time_rec_${idx}" name="time_rec_${idx}" class="dia-hora w-full text-[10px] bg-gray-50 border-none rounded-lg p-1 outline-none font-bold" value="08:00" ${ (idx === 0 || idx === 6) ? 'disabled' : '' }>
+                <label class="sr-only" for="hora-${idx}">Hora para ${dia}</label>
+                <input type="time" id="hora-${idx}" class="dia-hora w-full text-[10px] bg-white border border-gray-200 rounded-lg p-1 outline-none font-bold" value="08:00" ${ (idx === 0 || idx === 6) ? 'disabled' : '' }>
             </div>
         `).join('');
     }
@@ -279,7 +296,7 @@ window.gerarDatasRecorrentes = () => {
     const inicioStr = document.getElementById("dataInicioRec").value;
     const meses = parseInt(document.getElementById("mesesRec").value);
     const checks = document.querySelectorAll(".dia-check:checked");
-    if(!inicioStr || checks.length === 0) return showMsg("Preencha data e selecione os dias!", "erro");
+    if(!inicioStr || checks.length === 0) return showMsg("Preencha a data e dias!", "erro");
     
     let configDias = {};
     checks.forEach(cb => { configDias[cb.value] = cb.closest('div').querySelector('.dia-hora').value; });
@@ -290,24 +307,30 @@ window.gerarDatasRecorrentes = () => {
     
     while(dataAtual <= dataFim) {
         let diaDaSemana = dataAtual.getDay();
-        if(diaDaSemana !== 0 && diaDaSemana !== 6 && configDias[diaDaSemana]) {
+        if(configDias[diaDaSemana]) {
              window.addDataRow(dataAtual.toISOString().split('T')[0], configDias[diaDaSemana]);
         }
         dataAtual.setDate(dataAtual.getDate() + 1);
     }
-    document.getElementById("panelRecurrencia").classList.add('hidden');
-    showMsg("Datas geradas (exceto fins de semana)!", "sucesso");
+    window.toggleRecurrencia();
+    showMsg("Cronograma gerado!", "sucesso");
 };
 
 window.addDataRow = (data = '', hora = '') => {
     const container = document.getElementById("datasContainer");
     const div = document.createElement("div");
-    const rowId = Math.random().toString(36).substr(2, 9);
-    div.className = "data-row grid grid-cols-[1fr_1fr_40px] gap-3 items-end fade-in bg-white p-2 rounded-xl border border-gray-50";
+    const uniqueId = Math.random().toString(36).substr(2, 5);
+    div.className = "data-row grid grid-cols-[1fr_1fr_40px] gap-3 items-center fade-in bg-gray-50 p-2 rounded-xl";
     div.innerHTML = `
-        <div><input type="date" id="d_${rowId}" name="d_${rowId}" value="${data}" class="row-data w-full px-4 py-2 bg-gray-50 rounded-lg outline-none text-sm"></div>
-        <div><input type="time" id="h_${rowId}" name="h_${rowId}" value="${hora}" class="row-hora w-full px-4 py-2 bg-gray-50 rounded-lg outline-none text-sm"></div>
-        <div class="pb-1 text-center"><button onclick="this.parentElement.parentElement.remove()" class="text-gray-300 hover:text-danger btn-hover"><i class="ph ph-trash text-lg"></i></button></div>
+        <div>
+            <label class="sr-only" for="date-${uniqueId}">Data</label>
+            <input type="date" id="date-${uniqueId}" value="${data}" class="row-data w-full px-3 py-2 bg-white rounded-lg border-none text-xs font-bold">
+        </div>
+        <div>
+            <label class="sr-only" for="time-${uniqueId}">Hora</label>
+            <input type="time" id="time-${uniqueId}" value="${hora}" class="row-hora w-full px-3 py-2 bg-white rounded-lg border-none text-xs font-bold">
+        </div>
+        <button onclick="this.parentElement.remove()" class="text-gray-300 hover:text-danger"><i class="ph ph-trash text-lg"></i></button>
     `;
     container.appendChild(div);
 };
@@ -339,8 +362,8 @@ async function carregarFuncionarios() {
     document.getElementById("funcAdmin").innerHTML = '<option value="">Sem Funcionário</option>' + funcionarios.map(f => `<option value="${f.nome}">${f.nome}</option>`).join('');
     document.getElementById("listaFuncionarios").innerHTML = funcionarios.map(f => `
         <div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl border border-gray-100">
-            <span class="font-bold text-secondary uppercase text-xs tracking-tight">${f.nome}</span>
-            <button onclick="window.removerFuncionario('${f.id}')" class="w-10 h-10 flex items-center justify-center bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all btn-hover"><i class="ph ph-trash text-lg"></i></button>
+            <span class="font-bold text-secondary uppercase text-xs">${f.nome}</span>
+            <button onclick="window.removerFuncionario('${f.id}')" class="text-red-500 hover:bg-red-500 hover:text-white p-2 rounded-xl transition-all"><i class="ph ph-trash text-lg"></i></button>
         </div>`).join('');
 }
 
@@ -350,34 +373,53 @@ window.adicionarFuncionario = async () => {
         await addDoc(collection(db, "funcionarios"), {nome}); 
         document.getElementById("nomeFuncionario").value = "";
         carregarFuncionarios(); 
-        showMsg("Funcionário adicionado!", "sucesso");
     }
 };
 
 window.removerFuncionario = async (id) => { 
-    if(confirm("Deseja remover este profissional?")) { 
+    if(confirm("Remover profissional?")) { 
         await deleteDoc(doc(db, "funcionarios", id)); 
         carregarFuncionarios(); 
-        showMsg("Funcionário removido!", "erro");
     } 
 };
 
+
+
 window.abrirConfirmacao = async (id) => {
+    // 1. Localiza o agendamento original no array local
+    const agendamentoOriginal = agendamentos.find(a => a.id === id);
+    if (!agendamentoOriginal) return;
+
+    // 2. Captura os valores que estão atualmente nos inputs do card
     const card = document.querySelector(`[data-id="${id}"]`);
     const novaData = card.querySelector('.edit-data').value;
     const novaHora = card.querySelector('.edit-hora').value;
     const novoFunc = card.querySelector('.edit-func').value;
-    const original = agendamentos.find(a => a.id === id);
 
-    if (novaData === original.data && novaHora === original.horario && novoFunc === original.funcionario) {
-        return showMsg("Sem alterações detectadas.", "erro");
+    // 3. Verifica se houve alteração real ou se o status mudou de 'pendente'
+    const houveAlteracao = 
+        novaData !== agendamentoOriginal.data || 
+        novaHora !== agendamentoOriginal.horario || 
+        novoFunc !== (agendamentoOriginal.funcionario || "") ||
+        agendamentoOriginal.status === 'pendente'; // Se for pendente, validar sempre conta como alteração
+
+    if (houveAlteracao) {
+        try {
+            await updateDoc(doc(db, "agendamentos", id), { 
+                data: novaData, 
+                horario: novaHora, 
+                funcionario: novoFunc, 
+                status: 'confirmado' 
+            });
+            showMsg("Atualizado!", "sucesso");
+        } catch (error) {
+            showMsg("Erro ao atualizar", "erro");
+        }
+    } else {
+        // Se não mudou nada, não faz nada no banco e avisa (opcional)
+        showMsg("Nenhuma alteração detectada", "erro"); 
+        // Ou simplesmente não coloque o showMsg se preferir silêncio absoluto
     }
-    if(!novaData || !novaHora) return showMsg("Preencha data e hora!", "erro");
-
-    await updateDoc(doc(db, "agendamentos", id), {
-        data: novaData, horario: novaHora, funcionario: novoFunc, status: 'confirmado'
-    });
-    showMsg("Registro atualizado!", "sucesso");
 };
 
 function renderCards() {
@@ -386,7 +428,6 @@ function renderCards() {
     const filtroStatus = document.getElementById("filtroStatus").value;
     
     let filtrados = agendamentos.filter(a => mostrandoHistorico ? a.status === 'finalizado' : a.status !== 'finalizado');
-
     if (buscaData) filtrados = filtrados.filter(a => a.data === buscaData);
     if (filtroStatus === 'sem_funcionario') filtrados = filtrados.filter(a => !a.funcionario);
     else if (filtroStatus !== 'todos') filtrados = filtrados.filter(a => a.status === filtroStatus);
@@ -396,47 +437,79 @@ function renderCards() {
 
     document.getElementById("cards").innerHTML = filtrados.map(a => {
         const color = a.status === 'confirmado' ? 'green' : a.status === 'cancelado' ? 'red' : 'yellow';
-        const labelStatus = a.status === 'pendente' ? 'Aguardando' : a.status.charAt(0).toUpperCase() + a.status.slice(1);
-        
-        // LIMPA O NÚMERO PARA O LINK DO WHATSAPP
         const zapLink = a.whatsapp ? a.whatsapp.replace(/\D/g, '') : '';
+        const unique = a.id;
         
         return `
         <div data-id="${a.id}" class="bg-white p-6 rounded-[35px] border border-gray-100 card-shadow flex flex-col fade-in relative overflow-hidden">
-            ${!a.funcionario ? '<div class="absolute top-0 right-0 bg-red-500 text-white text-[8px] font-900 px-3 py-1 rounded-bl-xl uppercase tracking-widest">Sem Equipe</div>' : ''}
+            ${!a.funcionario ? '<div class="absolute top-0 right-0 bg-red-500 text-white text-[8px] font-900 px-3 py-1 rounded-bl-xl uppercase">Sem Equipe</div>' : ''}
             <div class="flex justify-between items-start mb-4">
                 <div class="max-w-[70%]">
-                    <h3 class="font-800 text-secondary truncate uppercase text-sm tracking-tight">${a.nomeCompleto || 'Visitante'}</h3>
-                    <a href="https://wa.me/${zapLink}" target="_blank" class="text-[11px] text-gray-400 font-bold flex items-center gap-1 mt-1 hover:text-green-600 transition-colors">
+                    <h3 class="font-800 text-secondary truncate uppercase text-sm">${a.nomeCompleto || 'Visitante'}</h3>
+                    <a href="https://wa.me/${zapLink}" target="_blank" class="text-[11px] text-gray-400 font-bold flex items-center gap-1 mt-1 hover:text-green-600">
                         <i class="ph ph-whatsapp-logo text-green-500 text-sm"></i> ${a.whatsapp || '-'}
                     </a>
                 </div>
-                <span class="text-[9px] font-900 px-3 py-1.5 rounded-full uppercase bg-${color}-50 text-${color}-600">${labelStatus}</span>
+                <span class="text-[9px] font-900 px-3 py-1.5 rounded-full uppercase bg-${color}-50 text-${color}-600">${a.status === 'pendente' ? 'Aguardando' : a.status}</span>
             </div>
             <div class="bg-gray-50 rounded-3xl p-4 mb-4 space-y-3">
-                <div class="flex items-center gap-3"><i class="ph ph-stethoscope text-primary"></i> <span class="text-xs font-800 text-gray-500 uppercase">${a.servico || 'Sessão'}</span></div>
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="date" name="d_edit_${a.id}" value="${a.data || ''}" class="edit-data bg-white border border-gray-100 rounded-xl px-2 py-2 text-[10px] font-bold outline-none">
-                    <input type="time" name="h_edit_${a.id}" value="${a.horario || ''}" class="edit-hora bg-white border border-gray-100 rounded-xl px-2 py-2 text-[10px] font-bold outline-none">
+                <div class="flex items-start gap-3 overflow-hidden">
+                    <i class="ph ph-stethoscope text-primary mt-0.5"></i> 
+                    <span class="text-xs font-800 text-gray-500 uppercase break-words flex-1">${a.servico || 'Sessão Geral'}</span>
                 </div>
-                <select name="f_edit_${a.id}" class="edit-func w-full bg-white border border-gray-100 rounded-xl px-3 py-2 text-[10px] font-bold outline-none text-secondary">
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="sr-only" for="edat-${unique}">Data</label>
+                    <input type="date" id="edat-${unique}" value="${a.data || ''}" class="edit-data bg-white border border-gray-100 rounded-xl px-2 py-2 text-[10px] font-bold outline-none">
+                    <label class="sr-only" for="ehor-${unique}">Hora</label>
+                    <input type="time" id="ehor-${unique}" value="${a.horario || ''}" class="edit-hora bg-white border border-gray-100 rounded-xl px-2 py-2 text-[10px] font-bold outline-none">
+                </div>
+                <label class="sr-only" for="efun-${unique}">Funcionário</label>
+                <select id="efun-${unique}" class="edit-func w-full bg-white border border-gray-100 rounded-xl px-3 py-2 text-[10px] font-bold outline-none text-secondary">
                     <option value="">Sem Funcionário</option>
                     ${funcionarios.map(f => `<option value="${f.nome}" ${a.funcionario === f.nome ? 'selected' : ''}>${f.nome}</option>`).join('')}
                 </select>
             </div>
             <div class="flex gap-2">
-                ${a.status === 'confirmado' ? `<button onclick="window.setStatus('${a.id}', 'finalizado')" class="flex-1 bg-primary text-white py-4 rounded-2xl text-[10px] font-900 uppercase btn-hover shadow-md">Finalizar</button>` : ''}
-                ${a.status === 'finalizado' ? `<button onclick="window.setStatus('${a.id}', 'confirmado')" class="flex-1 bg-gray-100 text-gray-500 py-4 rounded-2xl text-[10px] font-900 uppercase btn-hover">Reabrir</button>` : ''}
-                ${a.status === 'pendente' ? `<button onclick="window.abrirConfirmacao('${a.id}')" class="flex-1 bg-primary text-white py-4 rounded-2xl text-[10px] font-900 uppercase tracking-widest btn-hover shadow-md">Validar</button>` : 
+                ${a.status === 'confirmado' ? `<button onclick="window.setStatus('${a.id}', 'finalizado')" class="flex-1 bg-primary text-white py-4 rounded-2xl text-[10px] font-900 uppercase btn-hover">Finalizar</button>` : ''}
+                ${a.status === 'finalizado' ? `<button onclick="window.setStatus('${a.id}', 'confirmado')" class="flex-1 bg-gray-100 text-gray-500 py-4 rounded-2xl text-[10px] font-900 uppercase">Reabrir</button>` : ''}
+                ${a.status === 'pendente' ? `<button onclick="window.abrirConfirmacao('${a.id}')" class="flex-1 bg-primary text-white py-4 rounded-2xl text-[10px] font-900 uppercase btn-hover">Validar</button>` : 
                 (a.status !== 'finalizado' ? `<button onclick="window.abrirConfirmacao('${a.id}')" class="flex-1 bg-secondary text-white py-4 rounded-2xl text-[10px] font-900 uppercase btn-hover">Atualizar</button>` : '')}
-                <button onclick="window.excluir('${a.id}')" class="bg-red-50 text-red-500 px-5 rounded-2xl btn-hover border border-red-100"><i class="ph ph-trash text-xl"></i></button>
+                <button onclick="window.excluir('${a.id}')" class="bg-red-50 text-red-500 px-5 rounded-2xl border border-red-100"><i class="ph ph-trash text-xl"></i></button>
             </div>
         </div>`;
     }).join('');
 }
 
-window.setStatus = async (id, s) => { await updateDoc(doc(db, "agendamentos", id), { status: s }); showMsg(`Status: ${s}`, "sucesso"); };
-window.excluir = async (id) => { if(confirm("Deseja deletar?")) { await deleteDoc(doc(db, "agendamentos", id)); showMsg("Agendamento excluído!", "erro"); } };
+window.setStatus = async (id, s) => { await updateDoc(doc(db, "agendamentos", id), { status: s }); };
+window.excluir = async (id) => { if(confirm("Deletar registro?")) await deleteDoc(doc(db, "agendamentos", id)); };
+
+window.setStatus = async (id, novoStatus) => {
+    const agendamento = agendamentos.find(a => a.id === id);
+    
+    if (agendamento && agendamento.status !== novoStatus) {
+        try {
+            await updateDoc(doc(db, "agendamentos", id), { status: novoStatus });
+            const msg = novoStatus === 'finalizado' ? "Atendimento finalizado!" : "Agendamento reaberto!";
+            showMsg(msg, "sucesso");
+        } catch (error) {
+            showMsg("Erro ao alterar status", "erro");
+        }
+    }
+};
+
+window.excluir = async (id) => {
+    const agendamento = agendamentos.find(a => a.id === id);
+    const nome = agendamento ? agendamento.nomeCompleto : "este registro";
+
+    if (confirm(`Tem certeza que deseja excluir permanentemente o registro de "${nome}"?`)) {
+        try {
+            await deleteDoc(doc(db, "agendamentos", id));
+            showMsg("Registro removido!", "sucesso");
+        } catch (error) {
+            showMsg("Erro ao excluir", "erro");
+        }
+    }
+};
 
 window.criarAgendamento = async () => {
     const nome = document.getElementById("nomeAdmin").value;
@@ -444,13 +517,19 @@ window.criarAgendamento = async () => {
     const servico = document.getElementById("servicoAdmin").value;
     const funcionario = document.getElementById("funcAdmin").value;
     const rows = document.querySelectorAll(".data-row");
-    if(!nome) return showMsg("Nome obrigatório!", "erro");
+    if(!nome || rows.length === 0) return showMsg("Nome e Datas são obrigatórios!", "erro");
+    
     for (const row of rows) {
         const d = row.querySelector(".row-data").value;
         const h = row.querySelector(".row-hora").value;
-        if (d) await addDoc(collection(db, "agendamentos"), { nomeCompleto: nome, whatsapp, servico, data: d, horario: h, funcionario, status: 'confirmado', criadoEm: new Date() });
+        if (d && h) {
+            await addDoc(collection(db, "agendamentos"), { 
+                nomeCompleto: nome, whatsapp, servico, data: d, horario: h, 
+                funcionario, status: 'confirmado', criadoEm: new Date() 
+            });
+        }
     }
-    showMsg("Agendamentos criados!", "sucesso");
+    showMsg("Agendamentos salvos!", "sucesso");
     window.toggleForm('agendamento');
 };
 
@@ -465,16 +544,9 @@ window.toggleHistorico = () => {
     const btn = document.getElementById("btnHistorico");
     const txt = document.getElementById("txtHistorico");
     const ico = document.getElementById("iconHistorico");
-    
-    if(mostrandoHistorico) {
-        btn.classList.replace('bg-white', 'bg-history');
-        txt.classList.replace('text-history', 'text-white');
-        ico.classList.replace('text-history', 'text-white');
-    } else {
-        btn.classList.replace('bg-history', 'bg-white');
-        txt.classList.replace('text-white', 'text-history');
-        ico.classList.replace('text-white', 'text-history');
-    }
+    btn.className = mostrandoHistorico ? "bg-history p-6 rounded-[32px] card-shadow flex flex-col items-center justify-center gap-1 btn-hover" : "bg-white p-6 rounded-[32px] border border-gray-100 card-shadow flex flex-col items-center justify-center gap-1 btn-hover";
+    txt.className = mostrandoHistorico ? "text-[10px] uppercase font-800 text-white tracking-widest" : "text-[10px] uppercase font-800 text-history tracking-widest";
+    ico.className = mostrandoHistorico ? "ph ph-clock-counter-clockwise text-2xl text-white" : "ph ph-clock-counter-clockwise text-2xl text-history";
     renderCards();
 };
 

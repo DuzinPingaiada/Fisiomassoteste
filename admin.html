@@ -110,19 +110,21 @@
             </button>
         </div>
 
-        <div class="bg-white p-4 rounded-[28px] border border-gray-100 card-shadow flex flex-wrap md:flex-row gap-3 mb-8">
-            <div class="relative flex-[2] min-w-[200px]">
+        <div class="bg-white p-4 rounded-[28px] border border-gray-100 card-shadow 
+        flex flex-col md:flex-row md:flex-wrap gap-3 mb-8">
+        
+            <div class="relative flex-[2] min-w-[200px] w-full md:w-auto">
                 <label for="searchInput" class="sr-only">Buscar por nome ou WhatsApp</label>
                 <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input id="searchInput" name="searchInput" type="text" placeholder="Buscar por nome ou WhatsApp..." class="w-full pl-12 pr-4 py-4 bg-gray-50 border-none rounded-2xl outline-none">
             </div>
-            <div class="flex-1 min-w-[150px]">
+            <div class="flex-1 min-w-[150px] w-full md:w-auto">
                 <label for="searchDate" class="sr-only">Filtrar por data</label>
                 <input 
                     id="searchDate"
                     name="searchDate"
                     type="date"
-                    class="w-full h-[52px] px-4 bg-gray-50 border-none rounded-2xl outline-none font-bold text-secondary text-sm appearance-none"
+                   class="w-full h-[52px] px-4 bg-gray-50 border-none rounded-2xl text-sm font-bold text-secondary outline-none cursor-pointer"
                 >
             </div>
             <div class="flex-1 min-w-[150px]">
@@ -134,7 +136,12 @@
                     <option value="sem_funcionario">Sem Funcionário</option>
                 </select>
             </div>
-            <button onclick="window.toggleForm('funcionario')" class="bg-secondary text-white px-6 py-4 rounded-2xl font-bold text-xs uppercase tracking-widest btn-hover">Equipe</button>
+            <button 
+                onclick="window.toggleForm('funcionario')" 
+                class="bg-secondary text-white px-6 py-4 rounded-2xl font-bold text-xs uppercase tracking-widest btn-hover 
+                self-center md:self-auto">
+                Equipe
+            </button>
         </div>
 
         <div id="cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
